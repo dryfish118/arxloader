@@ -515,6 +515,6 @@ public:
 
 extern "C" __declspec(dllexport) IArxModule* __stdcall arx_module()
 {
-  static CArxModule fieldModule;
-  return &fieldModule;
+  static CArxModule module;
+  return &module;
 }
