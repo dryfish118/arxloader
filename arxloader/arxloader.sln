@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1433
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arxloader", "arxloader\arxloader.vcxproj", "{717021FB-EE57-43F7-B5C7-1C75B5DD663B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "field", "field\field.vcxproj", "{7DEE1E4F-22CC-42E1-BC72-82E3F5FCDC31}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Arx|x64 = Arx|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{717021FB-EE57-43F7-B5C7-1C75B5DD663B}.Arx|x64.ActiveCfg = Arx|x64
+		{717021FB-EE57-43F7-B5C7-1C75B5DD663B}.Arx|x64.Build.0 = Arx|x64
+		{7DEE1E4F-22CC-42E1-BC72-82E3F5FCDC31}.Arx|x64.ActiveCfg = Arx|x64
+		{7DEE1E4F-22CC-42E1-BC72-82E3F5FCDC31}.Arx|x64.Build.0 = Arx|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CE49207B-A955-4F6B-919A-7FB59F79635E}
+	EndGlobalSection
+EndGlobal
