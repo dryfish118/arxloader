@@ -14,16 +14,18 @@
 
 
 CarxlistDlg::CarxlistDlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_ARXLIST_DIALOG, pParent)
+	: CAcUiDialog(IDD_ARXLIST_DIALOG, pParent)
 {
 }
 
 void CarxlistDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+  CAcUiDialog::DoDataExchange(pDX);
+  DDX_Control(pDX, IDC_TREE_TESTCASE, m_lstArx);
 }
 
-BEGIN_MESSAGE_MAP(CarxlistDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CarxlistDlg, CAcUiDialog)
+  ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -31,8 +33,17 @@ END_MESSAGE_MAP()
 
 BOOL CarxlistDlg::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+  CAcUiDialog::OnInitDialog();
 
+  SetDialogName(L"ArxList Dialog");
+
+  MoveControlXY(m_lstArx.GetDlgCtrlID(), 0, 0);
+  MoveControlX(IDOK, 0);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
+}
+
+void CarxlistDlg::OnDestroy()
+{
+  CAcUiDialog::OnDestroy();
 }

@@ -53,6 +53,10 @@
 #include <string>
 #include <algorithm>
 
+#include <arxHeaders.h>
+#include <adui.h>
+#include <acui.h>
+#include <acuiDialog.h>
 
 
 #ifdef _UNICODE

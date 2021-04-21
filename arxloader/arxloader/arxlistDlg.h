@@ -6,7 +6,7 @@
 
 
 // CarxlistDlg 对话框
-class CarxlistDlg : public CDialogEx
+class CarxlistDlg : public CAcUiDialog
 {
 // 构造
 public:
@@ -26,5 +26,9 @@ protected:
 
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
+  afx_msg void OnDestroy();
 	DECLARE_MESSAGE_MAP()
+
+private:
+  CListCtrl m_lstArx;
 };
