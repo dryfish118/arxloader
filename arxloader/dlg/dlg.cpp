@@ -6,7 +6,7 @@ class CDlg : public ITestCase
 public:
   virtual const wchar_t* name() const
   {
-    return L"Create a mtext with a field";
+    return L"Test CAcUiDialog";
   }
 
   virtual void run(IRoot* root)

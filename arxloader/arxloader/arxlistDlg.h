@@ -30,5 +30,5 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-  CListCtrl m_lstArx;
+  CListCtrl m_treeArx;
 };
