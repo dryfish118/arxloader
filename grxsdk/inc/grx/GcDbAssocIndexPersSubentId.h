@@ -1,0 +1,6 @@
+﻿#pragma once
+#include "../DbAssocPersSubentId.h"
+
+#define GcDbAssocIndexPersSubentId OdDbAssocIndexPersSubentId
+#define GcDbAssocObjectAndIndexPersSubentId OdDbAssocObjectAndIndexPersSubentId
+#define GcDbAssocExternalIndexPersSubentId OdDbAssocExternalIndexPersSubentId

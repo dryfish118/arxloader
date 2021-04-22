@@ -1,0 +1,12 @@
+#pragma once
+#include "gcadstd.h"
+#include "../OdConstrainedGeometry.h"
+
+#define GcConstrainedConstructionLine	OdConstrainedConstructionLine
+#define GcConstrained2PointsConstructionLine	OdConstrained2PointsConstructionLine
+#define GcConstrainedDatumLine  OdConstrainedDatumLine
+#define GcConstrainedArc  OdConstrainedArc
+#define GcConstrainedBoundedEllipse  OdConstrainedBoundedEllipse
+#define GcConstrainedBoundedLine  OdConstrainedBoundedLine
+#define GcDbAssocTransInfo OdDbAssocTransInfo
+#define GcConstrainedGeometryDraggingInfo OdConstrainedGeometryDraggingInfo

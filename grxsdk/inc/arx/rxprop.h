@@ -1,0 +1,24 @@
+﻿#pragma once
+#include "../grx/rxprop.h"
+#include "acad2grx.h"
+
+#define AXRES_RESOURCE_HINT GXRES_RESOURCE_HINT
+#define ACAXTLB_RESOURCE_HINT GCAXTLB_RESOURCE_HINT
+#define ACAUTHENTITIESTLB_RESOURCE_HINT GCAUTHENTITIESTLB_RESOURCE_HINT
+#define ACOPMRES_RESOURCE_HINT GCOPMRES_RESOURCE_HINT
+#define ACSCENERES_RESOURCE_HINT GCSCENERES_RESOURCE_HINT
+
+
+#define AcRxProperty GcRxProperty
+#define AcRxPropertyBase GcRxPropertyBase
+#define AcRxValueIterator GcRxValueIterator
+#define AcRxIndexedProperty GcRxIndexedProperty
+#define AcRxPropertyOverrule GcRxPropertyOverrule
+#define AcRxCollectionProperty GcRxCollectionProperty
+#define AcRxDictionaryProperty GcRxDictionaryProperty
+#define AcRxPromotingQueryContext GcRxPromotingQueryContext
+#define AcRxCollectionPropertyOverrule GcRxCollectionPropertyOverrule
+
+#define AcRxPropertyImp GcRxPropertyImpl
+#define AcRxPropertyBaseImp GcRxPropertyBaseImpl
+#define AcRxCollectionPropertyImp GcRxCollectionPropertyImpl

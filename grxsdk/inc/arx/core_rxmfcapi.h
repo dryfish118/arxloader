@@ -1,0 +1,28 @@
+﻿#pragma once
+#include "../grx/core_rxmfcapi.h"
+#include "acad2grx.h"
+
+#define AcColorSettingsEx2 GcColorSettingsEx2
+#define acedGetCurrentColorsEx2 gcedGetCurrentColorsEx2
+#define acedSetCurrentColorsEx2 gcedSetCurrentColorsEx2
+#define acedGetSystemColorsEx2 gcedGetSystemColorsEx2
+#define AcColorSettingsEx3 GcColorSettingsEx3
+#define ACCORE_PORT GCCORE_PORT
+#define acedGetCurrentColorsEx3 gcedGetCurrentColorsEx3
+#define acedSetCurrentColorsEx3 gcedSetCurrentColorsEx3
+#define acedGetSystemColorsEx3 gcedGetSystemColorsEx3
+#define AcedOnIdleMsgFn GcedOnIdleMsgFn
+#define AcedOnModalFn GcedOnModalFn
+#define acedRegisterOnModal gcedRegisterOnModal
+#define acedRemoveOnModal gcedRemoveOnModal
+#define AcedRunLoopFn GcedRunLoopFn
+#define acedExecuteOnMainThread gcedExecuteOnMainThread
+#define IAcEdRunLoopTask IGcEdRunLoopTask
+#define acedRemoveRunLoopTask gcedRemoveRunLoopTask
+#define AcedCommandBitmapQueryFn GcedCommandBitmapQueryFn
+#define acedRemoveCommandBitmapQuery gcedRemoveCommandBitmapQuery
+#define acedRegisterCommandBitmapQuery gcedRegisterCommandBitmapQuery
+#define acedGetBitmapForCommand gcedGetBitmapForCommand
+#define acedGetCachedBitmapForCommand gcedGetCachedBitmapForCommand
+#define AcCommandToolTipInfo GcCommandToolTipInfo
+#define acedGetToolTipInfoForCommand gcedGetToolTipInfoForCommand

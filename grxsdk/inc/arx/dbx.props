@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30306.1</_ProjectFileVersion>
+    <_PropertySheetDisplayName>Dbx settings</_PropertySheetDisplayName>
+    <TargetExt>.dbx</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalDependencies>GcAlloc22.lib;GcRoot22.lib;GcGe22.lib;GcGi22.lib;GcDbRoot22.lib;GcDbEntities22.lib;GcDbCore22.lib;GcDbIO22.lib;GcWipeOut22.lib;GcISM22.lib;GcModelDocObj22.lib;GcMPolygonObj22.lib;GcSceneoe22.lib;GcCamera22.lib;GcDbPointCloudObj22.lib;DbConstraints22.lib;GcDynBlocks22.lib;GcGeolocationObj22.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+</Project>

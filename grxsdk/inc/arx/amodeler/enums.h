@@ -1,0 +1,11 @@
+﻿#ifndef AMODELER_INC_ENUMS_H
+#define AMODELER_INC_ENUMS_H
+
+
+#include "global.h"
+
+AMODELER_NAMESPACE_BEGIN
+
+AMODELER_NAMESPACE_END
+#endif
+
