@@ -485,9 +485,9 @@ public:
   CArxModule()
   {
     m_cases.push_back(new CCreateFieldMtext);
-    //m_cases.push_back(new CCreateLine);
-    //m_cases.push_back(new CListField);
-    //m_cases.push_back(new CReadField);
+    m_cases.push_back(new CCreateLine);
+    m_cases.push_back(new CListField);
+    m_cases.push_back(new CReadField);
   }
   ~CArxModule()
   {
@@ -515,6 +515,6 @@ public:
 
 extern "C" __declspec(dllexport) IArxModule* __stdcall arx_module()
 {
-  static CArxModule fieldModule;
-  return &fieldModule;
+  static CArxModule module;
+  return &module;
 }

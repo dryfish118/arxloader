@@ -21,7 +21,7 @@ CarxlistDlg::CarxlistDlg(CWnd* pParent /*=nullptr*/)
 void CarxlistDlg::DoDataExchange(CDataExchange* pDX)
 {
   CAcUiDialog::DoDataExchange(pDX);
-  DDX_Control(pDX, IDC_TREE_TESTCASE, m_lstArx);
+  DDX_Control(pDX, IDC_TREE_TESTCASE, m_treeArx);
 }
 
 BEGIN_MESSAGE_MAP(CarxlistDlg, CAcUiDialog)
@@ -37,7 +37,7 @@ BOOL CarxlistDlg::OnInitDialog()
 
   SetDialogName(L"ArxList Dialog");
 
-  MoveControlXY(m_lstArx.GetDlgCtrlID(), 0, 0);
+  MoveControlXY(m_treeArx.GetDlgCtrlID(), 0, 0);
   MoveControlX(IDOK, 0);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE

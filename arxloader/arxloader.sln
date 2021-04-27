@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arxloader", "arxloader\arxl
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "field", "field\field.vcxproj", "{7DEE1E4F-22CC-42E1-BC72-82E3F5FCDC31}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dlg", "dlg\dlg.vcxproj", "{9E37E961-C625-4184-BC63-3EA2474A5925}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Arx|x64 = Arx|x64
@@ -21,6 +23,10 @@ Global
 		{7DEE1E4F-22CC-42E1-BC72-82E3F5FCDC31}.Arx|x64.Build.0 = Arx|x64
 		{7DEE1E4F-22CC-42E1-BC72-82E3F5FCDC31}.Grx|x64.ActiveCfg = Grx|x64
 		{7DEE1E4F-22CC-42E1-BC72-82E3F5FCDC31}.Grx|x64.Build.0 = Grx|x64
+		{9E37E961-C625-4184-BC63-3EA2474A5925}.Arx|x64.ActiveCfg = Arx|x64
+		{9E37E961-C625-4184-BC63-3EA2474A5925}.Arx|x64.Build.0 = Arx|x64
+		{9E37E961-C625-4184-BC63-3EA2474A5925}.Grx|x64.ActiveCfg = Grx|x64
+		{9E37E961-C625-4184-BC63-3EA2474A5925}.Grx|x64.Build.0 = Grx|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
