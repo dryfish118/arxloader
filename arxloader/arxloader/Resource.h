@@ -5,6 +5,9 @@
 #define IDD_ARXLIST_DIALOG              102
 #define IDR_MAINFRAME                   128
 #define IDC_TREE_TESTCASE               1000
+#define IDC_STATIC_LOG                  1001
+#define IDC_BUTTON_FILE                 1002
+#define IDC_BUTTON_VIEW                 1003
 
 // Next default values for new objects
 // 
