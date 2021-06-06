@@ -17,7 +17,7 @@ public:
     return L"Create a mtext with a field";
   }
 
-  AcDbObjectId addMtext(IRoot* root)
+  AcDbObjectId addMtext()
   {
     AcDbDatabase* pDb = acdbHostApplicationServices()->workingDatabase();
 
@@ -26,12 +26,12 @@ public:
     pMtext->setDatabaseDefaults(pDb);
     pMtext->setLocation(AcGePoint3d(10, 0, 0));
     pMtext->setContents(L"AAA");
-    return root->addToModelSpace(pMtext);
+    return globalUtil->addToModelSpace(pMtext);
   }
 
-  virtual void run(IRoot* root)
+  virtual void run()
   {
-    AcDbMtextPtr pMtext(addMtext(root), AcDb::kForWrite);
+    AcDbMtextPtr pMtext(addMtext(), AcDb::kForWrite);
 
     AcDbDatabase* pDb = acdbHostApplicationServices()->workingDatabase();
 
@@ -63,9 +63,9 @@ public:
     return L"Create a line";
   }
 
-  virtual void run(IRoot* root)
+  virtual void run()
   {
-    AcDbLinePtr pLine(createLine(root), AcDb::kForWrite);
+    AcDbLinePtr pLine(createLine(), AcDb::kForWrite);
 
     //   AcDbFieldPtr pSubField;
 //   pSubField.create();
@@ -85,14 +85,14 @@ public:
   }
 
 private:
-  AcDbObjectId createLine(IRoot* root)
+  AcDbObjectId createLine()
   {
     AcDbLinePtr pLine;
     pLine.create();
     pLine->setDatabaseDefaults();
     pLine->setStartPoint(AcGePoint3d(10, 0, 0));
     pLine->setEndPoint(AcGePoint3d(20, 10, 0));
-    return root->addToModelSpace(pLine);
+    return globalUtil->addToModelSpace(pLine);
   }
 };
 
@@ -104,13 +104,13 @@ public:
     return L"List all fields in an object";
   }
 
-  virtual void run(IRoot* root)
+  virtual void run()
   {
     ads_name entres;
     ads_point ptres;
     if (RTNORM != acedEntSel(L"\n选择一个带Field的实体：", entres, ptres))
     {
-      root->printInfo(L"\n Failed to entsel.");
+      gDebuger->printInfo(L"\n Failed to entsel.");
       return;
     }
 
@@ -126,7 +126,7 @@ public:
     AcDbDictionaryPointer pFieldDict(pEnt->getFieldDictionary());
     if (Acad::eOk != pFieldDict.openStatus())
     {
-      root->printError(pFieldDict.openStatus(), L"getFieldDictionary");
+      gDebuger->printError(pFieldDict.openStatus(), L"getFieldDictionary");
       return;
     }
 
@@ -148,13 +148,13 @@ public:
     return L"Read the field info in an object";
   }
 
-  virtual void run(IRoot* root)
+  virtual void run()
   {
     ads_name entres;
     ads_point ptres;
     if (RTNORM != acedEntSel(L"\n选择一个带Field的实体：", entres, ptres))
     {
-      root->printInfo(L"\n Failed to entsel.");
+      gDebuger->printInfo(L"\n Failed to entsel.");
       return;
     }
 
@@ -164,14 +164,14 @@ public:
     AcDbEntityPointer pEnt(objId);
     if (Acad::eOk != pEnt.openStatus() || !pEnt->hasFields())
     {
-      root->printError(pEnt.openStatus(), L"Failed to open an entity.");
+      gDebuger->printError(pEnt.openStatus(), L"Failed to open an entity.");
       return;
     }
 
     AcDbDictionaryPointer pFieldDict(pEnt->getFieldDictionary());
     if (Acad::eOk != pFieldDict.openStatus())
     {
-      root->printError(pFieldDict.openStatus(), L"Failed to get the field dictionary.");
+      gDebuger->printError(pFieldDict.openStatus(), L"Failed to get the field dictionary.");
       return;
     }
 
@@ -181,7 +181,7 @@ public:
       AcDbFieldPtr pField(iterator->objectId());
       if (Acad::eOk == pField.openStatus())
       {
-        printField(root, L"", pField);
+        printField(L"", pField);
       }
 
       iterator->next();
@@ -189,7 +189,7 @@ public:
   }
 
 private:
-  void printField(IRoot* root, const AcString& strTab, const AcDbFieldPtr& pField)
+  void printField(const AcString& strTab, const AcDbFieldPtr& pField)
   {
     {
       //Acad::ErrorStatus setInObject(AcDbObject* pObj, const ACHAR * pszPropName);
@@ -197,7 +197,7 @@ private:
     }
     {
       AcDbField::State state = pField->state();
-      printState(root, strTab, state);
+      printState(strTab, state);
     }
 
     //   {
@@ -272,7 +272,7 @@ private:
       for (auto& it : flags)
       {
         acutPrintf(L"\n%sgetFieldCode: %s", strTab.constPtr(), it.second.constPtr());
-        getFieldCode(root, strTab + L"\t", pField, it.first);
+        getFieldCode(strTab + L"\t", pField, it.first);
       }
     }
 
@@ -428,52 +428,52 @@ private:
     //   }
   }
 
-  void printState(IRoot* root, const AcString& strTab, AcDbField::State state)
+  void printState(const AcString& strTab, AcDbField::State state)
   {
     AcString msg;
     msg.format(L"\n%sState(%d): ", strTab.constPtr(), state);
-    root->printInfo(msg);
+    gDebuger->printInfo(msg);
     if (state & AcDbField::kInitialized)
     {
-      root->printInfo(L"kInitialized (Field has been initialized by the evaluator)");
+      gDebuger->printInfo(L"kInitialized (Field has been initialized by the evaluator)");
     }
     if (state & AcDbField::kCompiled)
     {
-      root->printInfo(L"kCompiled (Field has beene compiled)");
+      gDebuger->printInfo(L"kCompiled (Field has beene compiled)");
     }
     if (state & AcDbField::kModified)
     {
-      root->printInfo(L"kModified (Field code has been modified, but not yet evaluated)");
+      gDebuger->printInfo(L"kModified (Field code has been modified, but not yet evaluated)");
     }
     if (state & AcDbField::kEvaluated)
     {
-      root->printInfo(L"kEvaluated (Field has been evaluated)");
+      gDebuger->printInfo(L"kEvaluated (Field has been evaluated)");
     }
     if (state & AcDbField::kHasCache)
     {
-      root->printInfo(L"kHasCache (Field has evaluated cache)");
+      gDebuger->printInfo(L"kHasCache (Field has evaluated cache)");
     }
     if (state & AcDbField::kHasFormattedString)
     {
-      root->printInfo(L"kHasFormattedString (For internal use only. Field has cached formatted string. )");
+      gDebuger->printInfo(L"kHasFormattedString (For internal use only. Field has cached formatted string. )");
     }
   }
 
-  void getFieldCode(IRoot* root, const AcString& strTab, const AcDbFieldPtr& pField, AcDbField::FieldCodeFlag nFlag)
+  void getFieldCode(const AcString& strTab, const AcDbFieldPtr& pField, AcDbField::FieldCodeFlag nFlag)
   {
     AcArray<AcDbField*> childFields;
     AcString sFieldCode = pField->getFieldCode(nFlag, &childFields, AcDb::kForRead);
     AcString msg;
     msg.format(L"\n%sgetFieldCode: %s  ChildFields: %d", strTab.constPtr(), sFieldCode.constPtr(), childFields.length());
-    root->printInfo(msg);
+    gDebuger->printInfo(msg);
     AcString strSubTab = strTab + L"\t";
     for (int i = 0; i < childFields.length(); i++)
     {
       msg.format(L"\n%s******Nth child[%d]******", strSubTab.constPtr(), i + 1);
-      root->printInfo(msg);
+      gDebuger->printInfo(msg);
       AcDbFieldPtr pSubField;
       pSubField.acquire(childFields[i]);
-      printField(root, strSubTab, pSubField);
+      printField(strSubTab, pSubField);
     }
   }
 };

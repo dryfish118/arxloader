@@ -1,12 +1,67 @@
 ﻿#include "pch.h"
-#include "root.h"
+#include "util.h"
 
-void CRoot::printInfo(const AcString& msg, MessageLevel)
+ACRX_DEFINE_MEMBERS_WORKER(CGlobalUtil, ACBASE_PORT)
+
+class CDebugerImpl : public CDebuger
+{
+public:
+  CDebugerImpl() {}
+  virtual ~CDebugerImpl() {}
+
+public:
+  virtual void printInfo(const AcString& msg, MessageLevel = kInfo);
+  virtual void printError(Acad::ErrorStatus es, const AcString& prefex = L"");
+
+  virtual void failure_eq(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line);
+  virtual void failure_ne(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line);
+  virtual void failure_le(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line);
+  virtual void failure_lt(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line);
+  virtual void failure_ge(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line);
+  virtual void failure_gt(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line);
+  virtual void assert_eq(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line);
+  virtual void assert_ne(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line);
+  virtual void assert_le(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line);
+  virtual void assert_lt(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line);
+  virtual void assert_ge(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line);
+  virtual void assert_gt(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line);
+};
+
+CGlobalUtilImpl::CGlobalUtilImpl()
+{
+  m_debuger = std::make_unique<CDebugerImpl>();
+}
+
+CDebuger* CGlobalUtilImpl::debuger() const
+{
+  return m_debuger.get();
+}
+
+AcDbObjectId CGlobalUtilImpl::addToModelSpace(AcDbEntity* pEntity)
+{
+  AcDbObjectId objId;
+  if (pEntity)
+  {
+    AcDbDatabase* pDb = acdbHostApplicationServices()->workingDatabase();
+    if (pDb)
+    {
+      AcDbBlockTableRecordPointer pBTR(ACDB_MODEL_SPACE, pDb, AcDb::kForWrite);
+      if (Acad::eOk == pBTR.openStatus())
+      {
+        pBTR->appendAcDbEntity(objId, pEntity);
+      }
+    }
+  }
+
+  return objId;
+}
+
+void CDebugerImpl::printInfo(const AcString& msg, MessageLevel)
 {
   acutPrintf(msg);
 }
 
-void CRoot::printError(Acad::ErrorStatus es, const AcString& prefex)
+void CDebugerImpl::printError(Acad::ErrorStatus es, const AcString& prefex)
 {
   AcString strOut;
   switch (es)
@@ -1053,21 +1108,62 @@ void CRoot::printError(Acad::ErrorStatus es, const AcString& prefex)
   }
 }
 
-AcDbObjectId CRoot::addToModelSpace(AcDbEntity* pEntity)
+void CDebugerImpl::failure_eq(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line)
 {
-  AcDbObjectId objId;
-  if (pEntity)
-  {
-    AcDbDatabase* pDb = acdbHostApplicationServices()->workingDatabase();
-    if (pDb)
-    {
-      AcDbBlockTableRecordPointer pBTR(ACDB_MODEL_SPACE, pDb, AcDb::kForWrite);
-      if (Acad::eOk == pBTR.openStatus())
-      {
-        pBTR->appendAcDbEntity(objId, pEntity);
-      }
-    }
-  }
 
-  return objId;
+}
+
+void CDebugerImpl::failure_ne(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line)
+{
+
+}
+
+void CDebugerImpl::failure_le(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line)
+{
+
+}
+
+void CDebugerImpl::failure_lt(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line)
+{
+
+}
+
+void CDebugerImpl::failure_ge(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line)
+{
+
+}
+
+void CDebugerImpl::failure_gt(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line)
+{
+
+}
+
+void CDebugerImpl::assert_eq(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line)
+{
+
+}
+
+void CDebugerImpl::assert_ne(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line)
+{
+
+}
+
+void CDebugerImpl::assert_le(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line)
+{
+
+}
+
+void CDebugerImpl::assert_lt(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line)
+{
+
+}
+
+void CDebugerImpl::assert_ge(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line)
+{
+
+}
+
+void CDebugerImpl::assert_gt(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line)
+{
+
 }

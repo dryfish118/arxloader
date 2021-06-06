@@ -17,7 +17,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Arx|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Grx|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="root.cpp" />
+    <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="arxlist.rc" />
@@ -27,7 +27,7 @@
     <ClInclude Include="arxlistDlg.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="root.h" />
+    <ClInclude Include="util.h" />
   </ItemGroup>
   <PropertyGroup Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>

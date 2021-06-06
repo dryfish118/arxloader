@@ -1,8 +1,7 @@
 ﻿#include "pch.h"
-#include "root.h"
+#include "util.h"
 #include "arxlistDlg.h"
 
-static std::unique_ptr<CRoot> root;
 typedef std::unordered_map<HMODULE, IArxModule*> ModuleArray;
 
 static void listModule(const wchar_t* path, ModuleArray& modules)
@@ -84,13 +83,13 @@ static void cmd_asdf()
   {
     AcString msg;
     msg.format(L"\n********\t%s\t********", it.second->moduleName());
-    root->printInfo(msg);
+    gDebuger->printInfo(msg);
     for (int i = 0; i < it.second->casesCount(); i++)
     {
       ITestCase* tc = it.second->getCase(i);
       msg.format(L"\nRun the case \"%s\" ...", tc->name());
-      root->printInfo(msg);
-      tc->run(root.get());
+      gDebuger->printInfo(msg);
+      tc->run();
     }
     FreeLibrary(it.first);
   }
@@ -118,13 +117,13 @@ initApp()
   acedRegCmds->addCommand(_T("ASDK_TEST_COMMANDS"),
     _T("ASDK_SUBASDF"), _T("-asdf"), ACRX_CMD_MODAL, cmd_subasdf);
   
-  root = std::make_unique<CRoot>();
+  acrxSysRegistry()->atPut(ACRX_CLASS_GLOBALUTIL, new CGlobalUtilImpl());
 }
 
 void
 unloadApp()
 {
-  root.release();
+  delete acrxSysRegistry()->remove(ACRX_CLASS_GLOBALUTIL);
 
   acedRegCmds->removeGroup(_T("ASDK_TEST_COMMANDS"));
 }
