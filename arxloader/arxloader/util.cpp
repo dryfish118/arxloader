@@ -1,8 +1,6 @@
 ﻿#include "pch.h"
 #include "util.h"
 
-ACRX_DEFINE_MEMBERS_WORKER(CGlobalUtil, ACBASE_PORT)
-
 class CDebugerImpl : public CDebuger
 {
 public:
@@ -27,9 +25,16 @@ public:
   virtual void assert_gt(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line);
 };
 
+class CDbHelperImpl : public CDbHelper
+{
+public:
+  virtual AcDbObjectId addToModelSpace(AcDbEntity* pEntity);
+};
+
 CGlobalUtilImpl::CGlobalUtilImpl()
 {
   m_debuger = std::make_unique<CDebugerImpl>();
+  m_dbHelper = std::make_unique<CDbHelperImpl>();
 }
 
 CDebuger* CGlobalUtilImpl::debuger() const
@@ -37,23 +42,9 @@ CDebuger* CGlobalUtilImpl::debuger() const
   return m_debuger.get();
 }
 
-AcDbObjectId CGlobalUtilImpl::addToModelSpace(AcDbEntity* pEntity)
+CDbHelper* CGlobalUtilImpl::dbHelper() const
 {
-  AcDbObjectId objId;
-  if (pEntity)
-  {
-    AcDbDatabase* pDb = acdbHostApplicationServices()->workingDatabase();
-    if (pDb)
-    {
-      AcDbBlockTableRecordPointer pBTR(ACDB_MODEL_SPACE, pDb, AcDb::kForWrite);
-      if (Acad::eOk == pBTR.openStatus())
-      {
-        pBTR->appendAcDbEntity(objId, pEntity);
-      }
-    }
-  }
-
-  return objId;
+  return m_dbHelper.get();
 }
 
 void CDebugerImpl::printInfo(const AcString& msg, MessageLevel)
@@ -1166,4 +1157,23 @@ void CDebugerImpl::assert_ge(const ACHAR* m1, const ACHAR* m2, const ACHAR* file
 void CDebugerImpl::assert_gt(const ACHAR* m1, const ACHAR* m2, const ACHAR* file, const ACHAR* line)
 {
 
+}
+
+AcDbObjectId CDbHelperImpl::addToModelSpace(AcDbEntity* pEntity)
+{
+  AcDbObjectId objId;
+  if (pEntity)
+  {
+    AcDbDatabase* pDb = acdbHostApplicationServices()->workingDatabase();
+    if (pDb)
+    {
+      AcDbBlockTableRecordPointer pBTR(ACDB_MODEL_SPACE, pDb, AcDb::kForWrite);
+      if (Acad::eOk == pBTR.openStatus())
+      {
+        pBTR->appendAcDbEntity(objId, pEntity);
+      }
+    }
+  }
+
+  return objId;
 }

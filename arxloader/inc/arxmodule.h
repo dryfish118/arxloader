@@ -9,20 +9,18 @@ typedef AcDbObjectPointer<AcDbMText> AcDbMtextPtr;
 typedef AcDbObjectPointer<AcDbField> AcDbFieldPtr;
 
 class CDebuger;
+class CDbHelper;
 
-#define ACRX_CLASS_GLOBALUTIL ACRX_T("Global Utility")
-
-class CGlobalUtil : public AcRxObject
+class CGlobalUtil
 {
 public:
-  ACRX_DECLARE_MEMBERS_EXPIMP(CGlobalUtil, ACBASE_PORT);
-
   virtual CDebuger* debuger() const = 0;
-  virtual AcDbObjectId addToModelSpace(AcDbEntity* pEntity) = 0;
+  virtual CDbHelper* dbHelper() const = 0;
 };
 
+#define ACRX_CLASS_GLOBALUTIL ACRX_T("Global Utility")
 #define globalUtil \
-CGlobalUtil::cast(acrxSysRegistry()->at(ACRX_CLASS_GLOBALUTIL))
+  dynamic_cast<CGlobalUtil*>(acrxSysRegistry()->at(ACRX_CLASS_GLOBALUTIL))
 
 class CDebuger
 {
@@ -54,6 +52,15 @@ public:
 
 #define gDebuger \
 globalUtil->debuger()
+
+class CDbHelper
+{
+public:
+  virtual AcDbObjectId addToModelSpace(AcDbEntity* pEntity) = 0;
+};
+
+#define gDbHelper \
+globalUtil->dbHelper()
 
 struct ITestCase
 {

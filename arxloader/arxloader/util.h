@@ -2,13 +2,17 @@
 #include "../inc/arxmodule.h"
 
 class CDebugerImpl;
+class CDbHelperImpl;
 
-class CGlobalUtilImpl : public CGlobalUtil
+class CGlobalUtilImpl
+  : public AcRxObject
+  , public CGlobalUtil
 {
-  std::unique_ptr< CDebugerImpl> m_debuger;
+  std::unique_ptr<CDebugerImpl> m_debuger;
+  std::unique_ptr<CDbHelperImpl> m_dbHelper;
 public:
   CGlobalUtilImpl();
 
   virtual CDebuger* debuger() const;
-  virtual AcDbObjectId addToModelSpace(AcDbEntity* pEntity);
+  virtual CDbHelper* dbHelper() const;
 };

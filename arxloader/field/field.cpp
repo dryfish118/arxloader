@@ -26,7 +26,7 @@ public:
     pMtext->setDatabaseDefaults(pDb);
     pMtext->setLocation(AcGePoint3d(10, 0, 0));
     pMtext->setContents(L"AAA");
-    return globalUtil->addToModelSpace(pMtext);
+    return gDbHelper->addToModelSpace(pMtext);
   }
 
   virtual void run()
@@ -92,7 +92,7 @@ private:
     pLine->setDatabaseDefaults();
     pLine->setStartPoint(AcGePoint3d(10, 0, 0));
     pLine->setEndPoint(AcGePoint3d(20, 10, 0));
-    return globalUtil->addToModelSpace(pLine);
+    return gDbHelper->addToModelSpace(pLine);
   }
 };
 
