@@ -1,9 +1,0 @@
-﻿#pragma once
-#include "OdDbGeoCoordinateSystem.h"
-#include "grxdefs.h"
-#define GcDbGeoDatum OdDbGeoDatum
-#define GcDbGeoEllipsoid OdDbGeoEllipsoid
-#define GcDbGeoCoordinateSystem OdDbGeoCoordinateSystem
-#define GcDbGeoProjectionParameter OdDbGeoProjectionParameter
-#define GcDbGeoCoordinateSystemCategory OdDbGeoCoordinateSystemCategory
-#define GcDbGeoCoordinateSystemTransformer OdDbGeoCoordinateSystemTransformer
