@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../inc/arxmodule.h"
+#include "../inc/gutil.h"
 
 class CDebugerImpl;
 class CDbHelperImpl;

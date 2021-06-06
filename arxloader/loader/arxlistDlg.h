@@ -4,6 +4,13 @@
 
 #pragma once
 
+#include "../inc/arxmodule.h"
+
+class CArxCase
+{
+public:
+  
+};
 
 // CarxlistDlg 对话框
 class CarxlistDlg : public CAcUiDialog
@@ -16,6 +23,8 @@ public:
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_ARXLIST_DIALOG };
 #endif
+
+  std::vector<IArxModule*> m_modules;
 
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持

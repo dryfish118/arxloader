@@ -104,8 +104,15 @@ static void cmd_subasdf()
   HANDLE h = GetModuleHandle(L"arxloader.grx");
 #endif // ARX
 
+  ModuleArray modules;
+  listModules(modules);
+
   AfxSetResourceHandle((HINSTANCE)h);
   CarxlistDlg dlg;
+  for (auto& it : modules)
+  {
+    dlg.m_modules.emplace_back(it.second);
+  }
   dlg.DoModal();
 }
 

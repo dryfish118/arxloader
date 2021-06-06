@@ -23,7 +23,6 @@
     <ResourceCompile Include="arxlist.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\inc\arxmodule.h" />
     <ClInclude Include="arxlistDlg.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />

@@ -8,6 +8,7 @@
 #include <vector>
 #include <memory>
 #include "../inc/arxmodule.h"
+#include "../inc/gutil.h"
 
 class CCreateFieldMtext : public ITestCase
 {

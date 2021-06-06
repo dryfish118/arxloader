@@ -83,17 +83,16 @@ void CarxlistDlg::OnDestroy()
 
 void CarxlistDlg::initTree()
 {
-  HTREEITEM hRoot = m_treeArx.InsertItem(L"Dlg test cases");
-  m_treeArx.InsertItem(L"Test CAcUiDialog", hRoot);
-  m_treeArx.Expand(hRoot, TVE_EXPAND);
-  m_treeArx.SetCheck(hRoot);
-  hRoot = m_treeArx.InsertItem(L"Field test cases");
-  m_treeArx.InsertItem(L"Create a mtext with a field", hRoot);
-  m_treeArx.InsertItem(L"Create a line", hRoot);
-  m_treeArx.InsertItem(L"List all fields in an object", hRoot);
-  m_treeArx.InsertItem(L"Read the field info in an object", hRoot);
-  m_treeArx.Expand(hRoot, TVE_EXPAND);
-  m_treeArx.SetCheck(hRoot);
+  for (auto& module : m_modules)
+  {
+    HTREEITEM hRoot = m_treeArx.InsertItem(module->moduleName());
+    for (int i = 0; i < module->casesCount(); i++)
+    {
+      m_treeArx.InsertItem(module->getCase(i)->name(), hRoot);
+    }
+    m_treeArx.Expand(hRoot, TVE_EXPAND);
+    m_treeArx.SetCheck(hRoot);
+  }
 }
 
 void CarxlistDlg::OnTvnItemChangedTree(NMHDR *pNMHDR, LRESULT *pResult)
