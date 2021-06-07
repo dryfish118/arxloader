@@ -23,6 +23,8 @@ BEGIN_MESSAGE_MAP(CConfigDlg, CBaseDlg)
   ON_BN_CLICKED(IDC_BUTTON_FILE, &CConfigDlg::OnBnClickedButtonFile)
   ON_BN_CLICKED(IDC_BUTTON_VIEW, &CConfigDlg::OnBnClickedButtonView)
   ON_BN_CLICKED(IDC_BUTTON_FILTER, &CConfigDlg::OnBnClickedButtonFilter)
+  ON_BN_CLICKED(IDC_BUTTON_ADD, &CConfigDlg::OnBnClickedButtonAdd)
+  ON_BN_CLICKED(IDC_BUTTON_DEL, &CConfigDlg::OnBnClickedButtonDel)
   ON_NOTIFY(TVN_ITEMCHANGED, IDC_TREE_TESTCASE, &CConfigDlg::OnTvnItemChangedTree)
   ON_NOTIFY(NM_DBLCLK, IDC_TREE_TESTCASE, &CConfigDlg::OnNMDblclkTree)
   ON_BN_CLICKED(IDC_BUTTON_ALL, &CConfigDlg::OnBnClickedButtonAll)
@@ -57,8 +59,10 @@ BOOL CConfigDlg::OnInitDialog()
   StretchControlX(IDC_STATIC_LOG, 100);
   MoveControlX(IDC_BUTTON_FILE, 100);
   MoveControlX(IDC_BUTTON_VIEW, 100);
-  StretchControlX(IDC_EDIT_FILTER, 100);
+  StretchControlX(IDC_COMBO_FILTER, 100);
   MoveControlX(IDC_BUTTON_FILTER, 100);
+  MoveControlX(IDC_BUTTON_ADD, 100);
+  MoveControlX(IDC_BUTTON_DEL, 100);
   MoveControlXY(IDC_TREE_TESTCASE, 0, 0);
   StretchControlXY(IDC_TREE_TESTCASE, 100, 100);
   MoveControlY(IDC_BUTTON_ALL, 100);
@@ -73,7 +77,11 @@ BOOL CConfigDlg::OnInitDialog()
   }
   SetDlgItemText(IDC_STATIC_LOG, m_logFile);
 
-  SetDlgItemText(IDC_EDIT_FILTER, m_filter);
+  CComboBox* box = (CComboBox*)GetDlgItem(IDC_COMBO_FILTER);
+  for (int i = 0; i < m_filters.GetCount(); i++)
+  {
+    box->AddString(m_filters.GetAt(i));
+  }
 
   m_treeArx.ModifyStyle(0, TVS_HASBUTTONS | TVS_HASLINES |
     TVS_LINESATROOT | TVS_DISABLEDRAGDROP | TVS_CHECKBOXES);
@@ -127,6 +135,36 @@ void CConfigDlg::OnBnClickedButtonView()
 void CConfigDlg::OnBnClickedButtonFilter()
 {
 
+}
+
+void CConfigDlg::OnBnClickedButtonAdd()
+{
+  CString str;
+  GetDlgItemText(IDC_COMBO_FILTER, str);
+  if (!str.Trim().IsEmpty())
+  {
+    CComboBox* box = (CComboBox*)GetDlgItem(IDC_COMBO_FILTER);
+    if (-1 == box->FindString(0, str))
+    {
+      box->AddString(str);
+    }
+  }
+}
+
+void CConfigDlg::OnBnClickedButtonDel()
+{
+  CString str;
+  GetDlgItemText(IDC_COMBO_FILTER, str);
+  if (!str.Trim().IsEmpty())
+  {
+    CComboBox* box = (CComboBox*)GetDlgItem(IDC_COMBO_FILTER);
+    int index = box->FindString(0, str);
+    if (-1 != index)
+    {
+      box->DeleteString(index);
+    }
+    SetDlgItemText(IDC_COMBO_FILTER, L"");
+  }
 }
 
 void CConfigDlg::OnTvnItemChangedTree(NMHDR *pNMHDR, LRESULT *pResult)
@@ -188,7 +226,15 @@ void CConfigDlg::checkTreeItem(BOOL bCheck)
 void CConfigDlg::OnBnClickedOk()
 {
   GetDlgItemText(IDC_STATIC_LOG, m_logFile);
-  GetDlgItemText(IDC_EDIT_FILTER, m_filter);
+
+  m_filters.RemoveAll();
+  CComboBox* box = (CComboBox*)GetDlgItem(IDC_COMBO_FILTER);
+  for (int i = 0; i < box->GetCount(); i++)
+  {
+    CString str;
+    box->GetLBText(i, str);
+    m_filters.Add(str);
+  }
 
   for (int i = 0; i < m_ac.moduleCount(); i++)
   {
@@ -228,3 +274,4 @@ void CConfigDlg::OnBnClickedOk()
 
   CBaseDlg::OnOK();
 }
+

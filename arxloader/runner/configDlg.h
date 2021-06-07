@@ -15,7 +15,7 @@ public:
 #endif
 
   CString m_logFile;
-  CString m_filter;
+  CStringArray m_filters;
   CArxCases& m_ac;
   int m_bSave;
 
@@ -32,6 +32,8 @@ protected:
   afx_msg void OnBnClickedButtonFile();
   afx_msg void OnBnClickedButtonView();
   afx_msg void OnBnClickedButtonFilter();
+  afx_msg void OnBnClickedButtonAdd();
+  afx_msg void OnBnClickedButtonDel();
   afx_msg void OnTvnItemChangedTree(NMHDR *pNMHDR, LRESULT *pResult);
   afx_msg void OnNMDblclkTree(NMHDR *pNMHDR, LRESULT *pResult);
   afx_msg void OnBnClickedButtonAll();

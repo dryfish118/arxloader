@@ -22,7 +22,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="arxlist.rc" />
+    <ResourceCompile Include="arxrunner.rc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\arxcase.h" />
