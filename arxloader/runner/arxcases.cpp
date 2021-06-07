@@ -1,14 +1,6 @@
 #include "pch.h"
 #include "arxcases.h"
 
-CArxCases::~CArxCases()
-{
-  for (auto& it : m_modules)
-  {
-    FreeLibrary((HMODULE)it->getHandle());
-  }
-}
-
 CString getAutoCadInstallDir()
 {
   CRegKey rk;
@@ -25,25 +17,12 @@ CString getAutoCadInstallDir()
   return L"";
 }
 
-bool CArxCases::init()
+CArxCases::CArxCases()
 {
-  HANDLE h = GetModuleHandle(L"arxrunner.exe");
-  if (h == nullptr)
-  {
-    return false;
-  }
-  wchar_t szFilePath[MAX_PATH] = { 0 };
-  GetModuleFileName((HMODULE)h, szFilePath, MAX_PATH);
-  if (wcslen(szFilePath) == 0)
-  {
-    return false;
-  }
-
   SetCurrentDirectory(getAutoCadInstallDir());
 
 #if _MSVC_LANG >= 201703L
-  std::filesystem::path currentFilePath(szFilePath);
-  std::filesystem::path currentPath = currentFilePath.parent_path();
+  std::filesystem::path currentPath((LPCTSTR)appDir());
   std::filesystem::directory_iterator its(currentPath);
   for (auto& it : its)
   {
@@ -53,12 +32,8 @@ bool CArxCases::init()
     }
   }
 #else
-  wchar_t* szTail = wcsrchr(szFilePath, L'\\');
-  wchar_t szDir[MAX_PATH] = { 0 };
-  wcsncpy_s(szDir, MAX_PATH, szFilePath, szTail - szFilePath + 1);
-
   WIN32_FIND_DATA fd = { 0 };
-  HANDLE hFind = FindFirstFile(AcString(szDir) + L"*.dll", &fd);
+  HANDLE hFind = FindFirstFile(appDir() + L"*.dll", &fd);
   if (hFind == INVALID_HANDLE_VALUE)
   {
     return;
@@ -66,13 +41,19 @@ bool CArxCases::init()
 
   do
   {
-    listModule(AcString(szDir) + fd.cFileName, modules);
+    listModule(appDir() + fd.cFileName);
   } while (FindNextFile(hFind, &fd) != 0);
 
   FindClose(hFind);
 #endif // ARX
+}
 
-  return true;
+CArxCases::~CArxCases()
+{
+  for (auto& it : m_modules)
+  {
+    FreeLibrary((HMODULE)it->getHandle());
+  }
 }
 
 void CArxCases::listModule(const wchar_t* path)
@@ -94,16 +75,6 @@ void CArxCases::listModule(const wchar_t* path)
     }
     FreeLibrary(hArx);
   }
-}
-
-void CArxCases::loadCases()
-{
-
-}
-
-void CArxCases::saveCases()
-{
-
 }
 
 int CArxCases::moduleCount() const

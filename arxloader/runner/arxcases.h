@@ -4,10 +4,9 @@ class CArxCases : public IArxCases
 {
   std::vector<IArxModule*> m_modules;
 public:
+  CArxCases();
   virtual ~CArxCases();
-  virtual bool init();
-  virtual void loadCases();
-  virtual void saveCases();
+
   virtual int moduleCount() const;
   virtual IArxModule* moduleAt(int i) const;
 

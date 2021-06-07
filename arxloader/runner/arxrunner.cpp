@@ -30,6 +30,25 @@ CArxRunnerApp::CArxRunnerApp()
 
 CArxRunnerApp theApp;
 
+CString appDir()
+{
+  wchar_t szFilePath[MAX_PATH] = { 0 };
+  GetModuleFileName(nullptr, szFilePath, MAX_PATH);
+  if (wcslen(szFilePath) == 0)
+  {
+    return L"";
+  }
+
+#if _MSVC_LANG >= 201703L
+  std::filesystem::path currentFilePath(szFilePath);
+  return currentFilePath.parent_path().c_str();
+#else
+  wchar_t* szTail = wcsrchr(szFilePath, L'\\');
+  wchar_t szDir[MAX_PATH] = { 0 };
+  wcsncpy_s(szDir, MAX_PATH, szFilePath, szTail - szFilePath + 1);
+  return szDir;
+#endif
+}
 
 // CArxRunnerApp 初始化
 
@@ -66,11 +85,8 @@ BOOL CArxRunnerApp::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("ArxRunner"));
 
-  CArxCases ac;
-  ac.init();
-  ac.loadCases();
-
-	CConfigDlg dlg(ac);
+  CConfig cfg;
+	CConfigDlg dlg(cfg);
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)

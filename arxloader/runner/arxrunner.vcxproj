@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="arxcases.cpp" />
+    <ClCompile Include="config.cpp" />
     <ClCompile Include="configDlg.cpp" />
     <ClCompile Include="arxrunner.cpp" />
     <ClCompile Include="arxrunnerDlg.cpp" />
@@ -28,6 +29,7 @@
   <ItemGroup>
     <ClInclude Include="..\inc\arxcase.h" />
     <ClInclude Include="arxcases.h" />
+    <ClInclude Include="config.h" />
     <ClInclude Include="configDlg.h" />
     <ClInclude Include="arxrunner.h" />
     <ClInclude Include="arxrunnerDlg.h" />

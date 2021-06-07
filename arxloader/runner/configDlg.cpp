@@ -6,9 +6,9 @@
 #define new DEBUG_NEW
 #endif
 
-CConfigDlg::CConfigDlg(CArxCases& ac, CWnd* pParent /*=nullptr*/)
+CConfigDlg::CConfigDlg(CConfig& cfg, CWnd* pParent /*=nullptr*/)
 	: CBaseDlg(IDD_ARXLIST_DIALOG, pParent)
-  , m_ac(ac)
+  , m_config(cfg)
 {
   SetDialogName(L"ArxRunner Config Dialog");
 }
@@ -35,23 +35,6 @@ END_MESSAGE_MAP()
 
 // CarxlistDlg 消息处理程序
 
-static CString documentsPath()
-{
-  LPITEMIDLIST pidl = nullptr;
-  if (SUCCEEDED(SHGetSpecialFolderLocation(NULL, CSIDL_MYDOCUMENTS, &pidl)))
-  {
-    wchar_t szPath[MAX_PATH] = { 0 };
-    if (SHGetPathFromIDList(pidl, szPath))
-    {
-      CoTaskMemFree(pidl);
-
-      return szPath;
-    }
-  }
-
-  return L"";
-}
-
 BOOL CConfigDlg::OnInitDialog()
 {
   CBaseDlg::OnInitDialog();
@@ -71,16 +54,12 @@ BOOL CConfigDlg::OnInitDialog()
   MoveControlXY(IDCANCEL, 100, 100);
   MoveControlXY(IDOK, 100, 100);
 
-  if (m_logFile.IsEmpty())
-  {
-    m_logFile = documentsPath() + L"\\resuts.log";
-  }
-  SetDlgItemText(IDC_STATIC_LOG, m_logFile);
+  SetDlgItemText(IDC_STATIC_LOG, m_config.m_logFile);
 
   CComboBox* box = (CComboBox*)GetDlgItem(IDC_COMBO_FILTER);
-  for (int i = 0; i < m_filters.GetCount(); i++)
+  for (int i = 0; i < m_config.m_filters.GetCount(); i++)
   {
-    box->AddString(m_filters.GetAt(i));
+    box->AddString(m_config.m_filters.GetAt(i));
   }
 
   m_treeArx.ModifyStyle(0, TVS_HASBUTTONS | TVS_HASLINES |
@@ -88,16 +67,16 @@ BOOL CConfigDlg::OnInitDialog()
   initTree();
   OnBnClickedButtonFilter();
 
-  ((CButton*)GetDlgItem(IDC_CHECK_SAVE))->SetCheck(m_bSave);
+  ((CButton*)GetDlgItem(IDC_CHECK_SAVE))->SetCheck(m_config.m_bSave);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
 void CConfigDlg::initTree()
 {
-  for (int i = 0; i < m_ac.moduleCount(); i++)
+  for (int i = 0; i < m_config.m_ac.moduleCount(); i++)
   {
-    IArxModule* m = m_ac.moduleAt(i);
+    IArxModule* m = m_config.m_ac.moduleAt(i);
     HTREEITEM hRoot = m_treeArx.InsertItem(m->moduleName());
     m_treeArx.SetItemData(hRoot, (DWORD_PTR)i);
     for (int j = 0; j < m->caseCount(); j++)
@@ -225,20 +204,20 @@ void CConfigDlg::checkTreeItem(BOOL bCheck)
 
 void CConfigDlg::OnBnClickedOk()
 {
-  GetDlgItemText(IDC_STATIC_LOG, m_logFile);
+  GetDlgItemText(IDC_STATIC_LOG, m_config.m_logFile);
 
-  m_filters.RemoveAll();
+  m_config.m_filters.RemoveAll();
   CComboBox* box = (CComboBox*)GetDlgItem(IDC_COMBO_FILTER);
   for (int i = 0; i < box->GetCount(); i++)
   {
     CString str;
     box->GetLBText(i, str);
-    m_filters.Add(str);
+    m_config.m_filters.Add(str);
   }
 
-  for (int i = 0; i < m_ac.moduleCount(); i++)
+  for (int i = 0; i < m_config.m_ac.moduleCount(); i++)
   {
-    IArxModule* m = m_ac.moduleAt(i);
+    IArxModule* m = m_config.m_ac.moduleAt(i);
     for (int j = 0; j < m->caseCount(); j++)
     {
       IArxCase* c = m->caseAt(j);
@@ -252,7 +231,7 @@ void CConfigDlg::OnBnClickedOk()
     if (m_treeArx.GetCheck(hRoot))
     {
       int i = (int)m_treeArx.GetItemData(hRoot);
-      IArxModule* m = m_ac.moduleAt(i);
+      IArxModule* m = m_config.m_ac.moduleAt(i);
 
       HTREEITEM hChild = m_treeArx.GetChildItem(hRoot);
       while (hChild)
@@ -270,7 +249,7 @@ void CConfigDlg::OnBnClickedOk()
     hRoot = m_treeArx.GetNextSiblingItem(hRoot);
   }
 
-  m_bSave = ((CButton*)GetDlgItem(IDC_CHECK_SAVE))->GetCheck();
+  m_config.m_bSave = ((CButton*)GetDlgItem(IDC_CHECK_SAVE))->GetCheck();
 
   CBaseDlg::OnOK();
 }

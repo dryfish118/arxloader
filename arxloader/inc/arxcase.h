@@ -4,7 +4,6 @@
 class IArxCase
 {
 public:
-  virtual ~IArxCase() { }
   virtual const wchar_t* name() const = 0;
   virtual bool isEnabled() const = 0;
   virtual void setEnabled(bool e) = 0;
@@ -14,7 +13,6 @@ public:
 class IArxModule
 {
 public:
-  virtual ~IArxModule() { }
   virtual void putHandle(void* h) = 0;
   virtual void* getHandle() const = 0;
   virtual const wchar_t* moduleName() const = 0;
@@ -25,10 +23,6 @@ public:
 class IArxCases
 {
 public:
-  virtual ~IArxCases() { }
-  virtual bool init() = 0;
-  virtual void loadCases() = 0;
-  virtual void saveCases() = 0;
   virtual int moduleCount() const = 0;
   virtual IArxModule* moduleAt(int i) const = 0;
 };

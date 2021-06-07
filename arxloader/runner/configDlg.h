@@ -1,23 +1,21 @@
 ﻿#pragma once
 
 #include "basedlg.h"
+#include "config.h"
 #include "arxcases.h"
 
 class CConfigDlg : public CBaseDlg
 {
 // 构造
 public:
-	CConfigDlg(CArxCases& ac, CWnd* pParent = nullptr);	// 标准构造函数
+	CConfigDlg(CConfig& cfg, CWnd* pParent = nullptr);	// 标准构造函数
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_ARXLIST_DIALOG };
 #endif
 
-  CString m_logFile;
-  CStringArray m_filters;
-  CArxCases& m_ac;
-  int m_bSave;
+  CConfig& m_config;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
