@@ -49,7 +49,7 @@
 #include <string>
 #include <algorithm>
 
-#include "../inc/arxmodule.h"
+#include "../inc/arxcase.h"
 
 #ifdef _UNICODE
 #if defined _M_IX86

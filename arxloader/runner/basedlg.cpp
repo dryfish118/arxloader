@@ -386,7 +386,7 @@ BOOL CBaseDlg::GetDialogKey(CString& key)
   CString dlgName;
   if (GetDialogName(dlgName))
   {
-    key.Format(L"Dialogs\\%s\\", (const wchar_t*)dlgName);
+    key = dlgName;
     return TRUE;
   }
   return FALSE;
@@ -397,14 +397,8 @@ BOOL CBaseDlg::GetDialogData(LPCTSTR valueName, DWORD& data)
   CString str;
   GetDialogKey(str);
 
-  CRegKey registerAccess;
-  if (ERROR_SUCCESS == registerAccess.Open(HKEY_CURRENT_USER, str, KEY_READ))
-  {
-    return ERROR_SUCCESS == registerAccess.QueryDWORDValue(valueName, data);
-  }
-
-  data = 0;
-  return FALSE;
+  data = AfxGetApp()->GetProfileInt(str, valueName, 0);
+  return TRUE;
 }
 
 BOOL CBaseDlg::SetDialogData(LPCTSTR valueName, DWORD data)
@@ -412,13 +406,8 @@ BOOL CBaseDlg::SetDialogData(LPCTSTR valueName, DWORD data)
   CString str;
   GetDialogKey(str);
 
-  CRegKey registryAccess;
-  if (ERROR_SUCCESS == registryAccess.Open(HKEY_CURRENT_USER, str, KEY_WRITE))
-  {
-    return ERROR_SUCCESS == registryAccess.SetDWORDValue(valueName, data);
-  }
-
-  return FALSE;
+  AfxGetApp()->WriteProfileInt(str, valueName, (int)data);
+  return TRUE;
 }
 
 BOOL CBaseDlg::GetDialogName(CString& name)

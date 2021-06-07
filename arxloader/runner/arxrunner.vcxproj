@@ -11,7 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="arxlistDlg.cpp" />
+    <ClCompile Include="arxcases.cpp" />
+    <ClCompile Include="configDlg.cpp" />
     <ClCompile Include="arxrunner.cpp" />
     <ClCompile Include="arxrunnerDlg.cpp" />
     <ClCompile Include="basedlg.cpp" />
@@ -24,8 +25,9 @@
     <ResourceCompile Include="arxlist.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\inc\arxmodule.h" />
-    <ClInclude Include="arxlistDlg.h" />
+    <ClInclude Include="..\inc\arxcase.h" />
+    <ClInclude Include="arxcases.h" />
+    <ClInclude Include="configDlg.h" />
     <ClInclude Include="arxrunner.h" />
     <ClInclude Include="arxrunnerDlg.h" />
     <ClInclude Include="basedlg.h" />

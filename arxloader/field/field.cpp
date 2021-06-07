@@ -7,10 +7,32 @@
 #include <tchar.h>
 #include <vector>
 #include <memory>
-#include "../inc/arxmodule.h"
+#include "../inc/arxcase.h"
 #include "../inc/gutil.h"
 
-class CCreateFieldMtext : public ITestCase
+class CArxCase : public IArxCase
+{
+private:
+  bool m_enabled;
+public:
+  CArxCase()
+    : m_enabled(true)
+  {
+
+  }
+
+  virtual bool isEnabled() const
+  {
+    return m_enabled;
+  }
+
+  virtual void setEnabled(bool e)
+  {
+    m_enabled = e;
+  }
+};
+
+class CCreateFieldMtext : public CArxCase
 {
 public:
   virtual const wchar_t* name() const
@@ -56,7 +78,7 @@ public:
   }
 };
 
-class CCreateLine : public ITestCase
+class CCreateLine : public CArxCase
 {
 public:
   virtual const wchar_t* name() const
@@ -97,7 +119,7 @@ private:
   }
 };
 
-class CListField : public ITestCase
+class CListField : public CArxCase
 {
 public:
   virtual const wchar_t* name() const
@@ -141,7 +163,7 @@ public:
   }
 };
 
-class CReadField : public ITestCase
+class CReadField : public CArxCase
 {
 public:
   virtual const wchar_t* name() const
@@ -481,14 +503,15 @@ private:
 
 class CArxModule : public IArxModule
 {
-  std::vector<ITestCase*> m_cases;
+  void* m_h;
+  std::vector<IArxCase*> m_cases;
 public:
-  CArxModule()
+  CArxModule() : m_h(nullptr)
   {
-    m_cases.push_back(new CCreateFieldMtext);
-    m_cases.push_back(new CCreateLine);
-    m_cases.push_back(new CListField);
-    m_cases.push_back(new CReadField);
+    m_cases.emplace_back(new CCreateFieldMtext);
+    m_cases.emplace_back(new CCreateLine);
+    m_cases.emplace_back(new CListField);
+    m_cases.emplace_back(new CReadField);
   }
   ~CArxModule()
   {
@@ -498,17 +521,27 @@ public:
     }
   }
 
+  virtual void putHandle(void* h)
+  {
+    m_h = h;
+  }
+
+  virtual void* getHandle() const
+  {
+    return m_h;
+  }
+
   virtual const wchar_t* moduleName() const
   {
     return L"Field test cases";
   }
 
-  virtual int casesCount() const
+  virtual int caseCount() const
   {
     return (int)m_cases.size();
   }
 
-  virtual ITestCase* getCase(int i) const
+  virtual IArxCase* caseAt(int i) const
   {
     return m_cases.at(i);
   }

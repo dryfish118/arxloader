@@ -4,7 +4,7 @@
 
 #include "pch.h"
 #include "arxrunner.h"
-#include "arxlistDlg.h"
+#include "configDlg.h"
 #include "arxrunnerDlg.h"
 
 #ifdef _DEBUG
@@ -24,87 +24,6 @@ CArxRunnerApp::CArxRunnerApp()
 {
 	// TODO: 在此处添加构造代码，
 	// 将所有重要的初始化放置在 InitInstance 中
-}
-
-CString getAutoCadInstallDir()
-{
-  CRegKey rk;
-  if (ERROR_SUCCESS == rk.Open(HKEY_LOCAL_MACHINE,
-    L"SOFTWARE\\Autodesk\\AutoCAD\\R23.1\\ACAD-3001:804", KEY_READ))
-  {
-    wchar_t	szDir[2048] = { 0 };
-    ULONG len = 2048;
-    if (ERROR_SUCCESS == rk.QueryStringValue(L"AcadLocation", szDir, &len))
-    {
-      return szDir;
-    }
-  }
-  return L"";
-}
-
-typedef std::unordered_map<HMODULE, IArxModule*> ModuleArray;
-
-static void listModule(const wchar_t* path, ModuleArray& modules)
-{
-  HMODULE hArx = LoadLibrary(path);
-  if (hArx)
-  {
-    typedef IArxModule* (WINAPI *ARXMODULE)();
-    ARXMODULE fun = (ARXMODULE)GetProcAddress(hArx, "arx_module");
-    if (fun)
-    {
-      IArxModule* am = fun();
-      if (am)
-      {
-        modules.insert(std::make_pair(hArx, am));
-        hArx = nullptr;
-      }
-    }
-    FreeLibrary(hArx);
-  }
-}
-
-static void listModules(ModuleArray& modules)
-{
-  SetCurrentDirectory(getAutoCadInstallDir());
-
-  wchar_t szFilePath[MAX_PATH] = { 0 };
-  GetModuleFileName(nullptr, szFilePath, MAX_PATH);
-  if (wcslen(szFilePath) == 0)
-  {
-    return;
-  }
-
-#if _MSVC_LANG >= 201703L
-  std::filesystem::path currentFilePath(szFilePath);
-  std::filesystem::path currentPath = currentFilePath.parent_path();
-  std::filesystem::directory_iterator its(currentPath);
-  for (auto& it : its)
-  {
-    if (it.path().extension() == L".dll")
-    {
-      listModule(it.path().c_str(), modules);
-    }
-  }
-#else
-  wchar_t* szTail = wcsrchr(szFilePath, L'\\');
-  wchar_t szDir[MAX_PATH] = { 0 };
-  wcsncpy_s(szDir, MAX_PATH, szFilePath, szTail - szFilePath + 1);
-
-  WIN32_FIND_DATA fd = { 0 };
-  HANDLE hFind = FindFirstFile(AcString(szDir) + L"*.dll", &fd);
-  if (hFind == INVALID_HANDLE_VALUE)
-  {
-    return;
-  }
-
-  do
-  {
-    listModule(AcString(szDir) + fd.cFileName, modules);
-  } while (FindNextFile(hFind, &fd) != 0);
-
-  FindClose(hFind);
-#endif // ARX
 }
 
 // 唯一的 CArxRunnerApp 对象
@@ -147,14 +66,11 @@ BOOL CArxRunnerApp::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("ArxRunner"));
 
-  ModuleArray modules;
-  listModules(modules);
+  CArxCases ac;
+  ac.init();
+  ac.loadCases();
 
-	CArxListDlg dlg;
-  for (auto& it : modules)
-  {
-    dlg.m_modules.emplace_back(it.second);
-  }
+	CConfigDlg dlg(ac);
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
