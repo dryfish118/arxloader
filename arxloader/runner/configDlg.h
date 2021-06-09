@@ -15,6 +15,7 @@ public:
 	enum { IDD = IDD_ARXLIST_DIALOG };
 #endif
 
+  bool m_bInit;
   CConfig& m_config;
 
 protected:

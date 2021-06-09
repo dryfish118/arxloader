@@ -9,6 +9,7 @@
 CConfigDlg::CConfigDlg(CConfig& cfg, CWnd* pParent /*=nullptr*/)
 	: CBaseDlg(IDD_ARXLIST_DIALOG, pParent)
   , m_config(cfg)
+  , m_bInit(false)
 {
   SetDialogName(L"ArxRunner Config Dialog");
 }
@@ -50,7 +51,10 @@ BOOL CConfigDlg::OnInitDialog()
   StretchControlXY(IDC_TREE_TESTCASE, 100, 100);
   MoveControlY(IDC_BUTTON_ALL, 100);
   MoveControlY(IDC_BUTTON_CLEAR, 100);
-  MoveControlXY(IDC_CHECK_SAVE, 100, 100);
+  MoveControlY(IDC_CHECK_SAVE, 100);
+  MoveControlXY(IDC_STATIC, 100, 100);
+  MoveControlXY(IDC_RADIO_GCAD, 100, 100);
+  MoveControlXY(IDC_RADIO_ACAD, 100, 100);
   MoveControlXY(IDCANCEL, 100, 100);
   MoveControlXY(IDOK, 100, 100);
 
@@ -68,27 +72,39 @@ BOOL CConfigDlg::OnInitDialog()
   OnBnClickedButtonFilter();
 
   ((CButton*)GetDlgItem(IDC_CHECK_SAVE))->SetCheck(m_config.m_bSave);
+  ((CButton*)GetDlgItem(IDC_RADIO_GCAD))->SetCheck(m_config.m_bGcad);
+  ((CButton*)GetDlgItem(IDC_RADIO_ACAD))->SetCheck(!m_config.m_bGcad);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
 void CConfigDlg::initTree()
 {
+  m_bInit = true;
   for (int i = 0; i < m_config.m_ac.moduleCount(); i++)
   {
     IArxModule* m = m_config.m_ac.moduleAt(i);
     HTREEITEM hRoot = m_treeArx.InsertItem(m->moduleName());
     m_treeArx.SetItemData(hRoot, (DWORD_PTR)i);
+    BOOL bCheck = FALSE;
     for (int j = 0; j < m->caseCount(); j++)
     {
       IArxCase* c = m->caseAt(j);
       HTREEITEM hItem = m_treeArx.InsertItem(c->name(), hRoot);
       m_treeArx.SetItemData(hItem, (DWORD_PTR)j);
-      m_treeArx.SetCheck(hItem, c->isEnabled());
+      if (c->isEnabled())
+      {
+        m_treeArx.SetCheck(hItem, TRUE);
+        bCheck = TRUE;
+      }
+    }
+    if (bCheck)
+    {
+      m_treeArx.SetCheck(hRoot, TRUE);
     }
     m_treeArx.Expand(hRoot, TVE_EXPAND);
-    m_treeArx.SetCheck(hRoot);
   }
+  m_bInit = false;
 }
 
 void CConfigDlg::OnBnClickedButtonFile()
@@ -148,16 +164,29 @@ void CConfigDlg::OnBnClickedButtonDel()
 
 void CConfigDlg::OnTvnItemChangedTree(NMHDR *pNMHDR, LRESULT *pResult)
 {
-  NMTVITEMCHANGE *pNMTVItemChange = reinterpret_cast<NMTVITEMCHANGE*>(pNMHDR);
-  HTREEITEM hItem = pNMTVItemChange->hItem;
-  if (m_treeArx.GetParentItem(hItem) == nullptr)
+  if (!m_bInit)
   {
-    BOOL ck = m_treeArx.GetCheck(hItem);
-    HTREEITEM hChild = m_treeArx.GetChildItem(hItem);
-    while (hChild)
+    NMTVITEMCHANGE *pNMTVItemChange = reinterpret_cast<NMTVITEMCHANGE*>(pNMHDR);
+    HTREEITEM hItem = pNMTVItemChange->hItem;
+    HTREEITEM hRoot = m_treeArx.GetParentItem(hItem);
+    if (hRoot == nullptr)
     {
-      m_treeArx.SetCheck(hChild, ck);
-      hChild = m_treeArx.GetNextItem(hChild, TVGN_NEXT);
+      BOOL ck = m_treeArx.GetCheck(hItem);
+      HTREEITEM hChild = m_treeArx.GetChildItem(hItem);
+      while (hChild)
+      {
+        m_treeArx.SetCheck(hChild, ck);
+        hChild = m_treeArx.GetNextItem(hChild, TVGN_NEXT);
+      }
+    }
+    else
+    {
+      if (m_treeArx.GetCheck(hItem) && !m_treeArx.GetCheck(hRoot))
+      {
+        m_bInit = true;
+        m_treeArx.SetCheck(hRoot);
+        m_bInit = false;
+      }
     }
   }
 
@@ -250,6 +279,7 @@ void CConfigDlg::OnBnClickedOk()
   }
 
   m_config.m_bSave = ((CButton*)GetDlgItem(IDC_CHECK_SAVE))->GetCheck();
+  m_config.m_bGcad = ((CButton*)GetDlgItem(IDC_RADIO_GCAD))->GetCheck();
 
   CBaseDlg::OnOK();
 }

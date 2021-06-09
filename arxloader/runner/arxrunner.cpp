@@ -41,7 +41,7 @@ CString appDir()
 
 #if _MSVC_LANG >= 201703L
   std::filesystem::path currentFilePath(szFilePath);
-  return currentFilePath.parent_path().c_str();
+  return currentFilePath.parent_path().c_str() + CString(L"\\");
 #else
   wchar_t* szTail = wcsrchr(szFilePath, L'\\');
   wchar_t szDir[MAX_PATH] = { 0 };

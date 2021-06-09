@@ -13,4 +13,5 @@ public:
   CArxCases m_ac;
   CStringArray m_filters;
   int m_bSave;
+  int m_bGcad;
 };
