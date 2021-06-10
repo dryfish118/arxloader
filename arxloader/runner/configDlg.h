@@ -15,7 +15,6 @@ public:
 	enum { IDD = IDD_ARXLIST_DIALOG };
 #endif
 
-  bool m_bInit;
   CConfig& m_config;
 
 protected:
@@ -28,6 +27,7 @@ protected:
 
 	// 生成的消息映射函数
   virtual BOOL OnInitDialog();
+  afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
   afx_msg void OnBnClickedButtonFile();
   afx_msg void OnBnClickedButtonView();
   afx_msg void OnBnClickedButtonFilter();
@@ -42,4 +42,5 @@ protected:
 
 private:
   CTreeCtrl m_treeArx;
+  bool m_bSetCheck;
 };

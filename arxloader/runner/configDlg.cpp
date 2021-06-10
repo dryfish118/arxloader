@@ -9,7 +9,7 @@
 CConfigDlg::CConfigDlg(CConfig& cfg, CWnd* pParent /*=nullptr*/)
 	: CBaseDlg(IDD_ARXLIST_DIALOG, pParent)
   , m_config(cfg)
-  , m_bInit(false)
+  , m_bSetCheck(false)
 {
   SetDialogName(L"ArxRunner Config Dialog");
 }
@@ -66,8 +66,6 @@ BOOL CConfigDlg::OnInitDialog()
     box->AddString(m_config.m_filters.GetAt(i));
   }
 
-  m_treeArx.ModifyStyle(0, TVS_HASBUTTONS | TVS_HASLINES |
-    TVS_LINESATROOT | TVS_DISABLEDRAGDROP | TVS_CHECKBOXES);
   initTree();
   OnBnClickedButtonFilter();
 
@@ -80,13 +78,15 @@ BOOL CConfigDlg::OnInitDialog()
 
 void CConfigDlg::initTree()
 {
-  m_bInit = true;
+  m_treeArx.ModifyStyle(0, TVS_HASBUTTONS | TVS_HASLINES |
+    TVS_LINESATROOT | TVS_DISABLEDRAGDROP | TVS_CHECKBOXES);
+
+  //m_bSetCheck = true;
   for (int i = 0; i < m_config.m_ac.moduleCount(); i++)
   {
     IArxModule* m = m_config.m_ac.moduleAt(i);
     HTREEITEM hRoot = m_treeArx.InsertItem(m->moduleName());
     m_treeArx.SetItemData(hRoot, (DWORD_PTR)i);
-    BOOL bCheck = FALSE;
     for (int j = 0; j < m->caseCount(); j++)
     {
       IArxCase* c = m->caseAt(j);
@@ -95,16 +95,11 @@ void CConfigDlg::initTree()
       if (c->isEnabled())
       {
         m_treeArx.SetCheck(hItem, TRUE);
-        bCheck = TRUE;
       }
-    }
-    if (bCheck)
-    {
-      m_treeArx.SetCheck(hRoot, TRUE);
     }
     m_treeArx.Expand(hRoot, TVE_EXPAND);
   }
-  m_bInit = false;
+  //m_bSetCheck = false;
 }
 
 void CConfigDlg::OnBnClickedButtonFile()
@@ -162,35 +157,41 @@ void CConfigDlg::OnBnClickedButtonDel()
   }
 }
 
+#define isChecked(uState) (((uState) & INDEXTOSTATEIMAGEMASK(2)) == INDEXTOSTATEIMAGEMASK(2))
+
 void CConfigDlg::OnTvnItemChangedTree(NMHDR *pNMHDR, LRESULT *pResult)
 {
-  if (!m_bInit)
+  if (!m_bSetCheck)
   {
     NMTVITEMCHANGE *pNMTVItemChange = reinterpret_cast<NMTVITEMCHANGE*>(pNMHDR);
-    HTREEITEM hItem = pNMTVItemChange->hItem;
-    HTREEITEM hRoot = m_treeArx.GetParentItem(hItem);
-    if (hRoot == nullptr)
+    if ((isChecked(pNMTVItemChange->uStateOld) && !isChecked(pNMTVItemChange->uStateNew)) ||
+      (!isChecked(pNMTVItemChange->uStateOld) && isChecked(pNMTVItemChange->uStateNew)))
     {
-      BOOL ck = m_treeArx.GetCheck(hItem);
-      HTREEITEM hChild = m_treeArx.GetChildItem(hItem);
-      while (hChild)
+      HTREEITEM hItem = pNMTVItemChange->hItem;
+      HTREEITEM hRoot = m_treeArx.GetParentItem(hItem);
+      if (hRoot == nullptr)
       {
-        m_treeArx.SetCheck(hChild, ck);
-        hChild = m_treeArx.GetNextItem(hChild, TVGN_NEXT);
+        BOOL ck = m_treeArx.GetCheck(hItem);
+        HTREEITEM hChild = m_treeArx.GetChildItem(hItem);
+        while (hChild)
+        {
+          m_treeArx.SetCheck(hChild, ck);
+          hChild = m_treeArx.GetNextSiblingItem(hChild);
+        }
       }
-    }
-    else
-    {
-      if (m_treeArx.GetCheck(hItem) && !m_treeArx.GetCheck(hRoot))
+      else
       {
-        m_bInit = true;
-        m_treeArx.SetCheck(hRoot);
-        m_bInit = false;
+        if (m_treeArx.GetCheck(hItem) && !m_treeArx.GetCheck(hRoot))
+        {
+          m_bSetCheck = true;
+          m_treeArx.SetCheck(hRoot, TRUE);
+          m_bSetCheck = false;
+        }
       }
     }
   }
 
-  *pResult = 0;
+  *pResult = 1;
 }
 
 void CConfigDlg::OnNMDblclkTree(NMHDR *pNMHDR, LRESULT *pResult)
@@ -198,7 +199,7 @@ void CConfigDlg::OnNMDblclkTree(NMHDR *pNMHDR, LRESULT *pResult)
   HTREEITEM hItem = m_treeArx.GetSelectedItem();
   if (hItem != nullptr)
   {
-    m_treeArx.SetCheck(hItem, !m_treeArx.GetCheck(hItem));
+    m_treeArx.SetCheck(hItem, m_treeArx.GetCheck(hItem) ? 0 : 1);
   }
 
   *pResult = 1;
@@ -216,6 +217,7 @@ void CConfigDlg::OnBnClickedButtonClear()
 
 void CConfigDlg::checkTreeItem(BOOL bCheck)
 {
+  m_bSetCheck = true;
   HTREEITEM hRoot = m_treeArx.GetRootItem();
   while (hRoot)
   {
@@ -229,6 +231,7 @@ void CConfigDlg::checkTreeItem(BOOL bCheck)
 
     hRoot = m_treeArx.GetNextSiblingItem(hRoot);
   }
+  m_bSetCheck = false;
 }
 
 void CConfigDlg::OnBnClickedOk()
