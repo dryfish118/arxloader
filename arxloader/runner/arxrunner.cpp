@@ -48,6 +48,47 @@ CString appDir()
 
 // CArxRunnerApp 初始化
 
+class CArxRunnerCommandLine
+  : public CCommandLineInfo
+{
+public:
+  CArxRunnerCommandLine()
+  {
+    bConfig = FALSE;
+    bRunner = FALSE;
+    bCase = FALSE;
+  }
+  virtual void ParseParam(const TCHAR* pszParam, BOOL bFlag, BOOL bLast)
+  {
+    if (bFlag)
+    {
+      bCase = FALSE;
+      if (_wcsicmp(pszParam, L"config") == 0)
+      {
+        bConfig = TRUE;
+      }
+      else if (_wcsicmp(pszParam, L"run") == 0)
+      {
+        bRunner = TRUE;
+      }
+      else if (_wcsicmp(pszParam, L"case") == 0)
+      {
+        bCase = TRUE;
+      }
+    }
+    else if (bCase)
+    {
+      sCase = pszParam;
+    }
+  }
+
+  BOOL bConfig;
+  BOOL bRunner;
+  BOOL bCase;
+  CString sCase;
+};
+
+
 BOOL CArxRunnerApp::InitInstance()
 {
 	INITCOMMONCONTROLSEX InitCtrls;
@@ -58,10 +99,33 @@ BOOL CArxRunnerApp::InitInstance()
 	CWinApp::InitInstance();
 	SetRegistryKey(_T("ArxRunner"));
 
-  CConfig cfg;
-	CConfigDlg dlg(cfg);
-	m_pMainWnd = &dlg;
-	dlg.DoModal();
+  CArxRunnerCommandLine cmdInfo;
+  ParseCommandLine(cmdInfo);
+
+  if (cmdInfo.bConfig)
+  {
+    CMutex m(TRUE, L"Arx runner - Config");
+    if (m.m_hObject)
+    {
+      CConfigDlg dlg;
+      m_pMainWnd = &dlg;
+      dlg.DoModal();
+    }
+  }
+  else if (cmdInfo.bRunner)
+  {
+    CMutex m(TRUE, L"Arx runner - Runner");
+    if (m.m_hObject)
+    {
+      CarxrunnerDlg dlg;
+      m_pMainWnd = &dlg;
+      dlg.DoModal();
+    }
+  }
+  else if (!cmdInfo.sCase.IsEmpty())
+  {
+    //
+  }
 
 	return FALSE;
 }

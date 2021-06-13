@@ -6,9 +6,8 @@
 #define new DEBUG_NEW
 #endif
 
-CConfigDlg::CConfigDlg(CConfig& cfg, CWnd* pParent /*=nullptr*/)
-	: CBaseDlg(IDD_ARXLIST_DIALOG, pParent)
-  , m_config(cfg)
+CConfigDlg::CConfigDlg(CWnd* pParent /*=nullptr*/)
+	: CBaseDlg(CConfigDlg::IDD, pParent)
   , m_bSetCheck(false)
 {
   SetDialogName(L"ArxRunner Config Dialog");

@@ -2,27 +2,18 @@
 
 #include "basedlg.h"
 #include "config.h"
-#include "arxcases.h"
 
 class CConfigDlg : public CBaseDlg
 {
 // 构造
 public:
-	CConfigDlg(CConfig& cfg, CWnd* pParent = nullptr);	// 标准构造函数
+	CConfigDlg(CWnd* pParent = nullptr);	// 标准构造函数
+  enum { IDD = IDD_CONFIG_DIALOG };
 
-// 对话框数据
-#ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_ARXLIST_DIALOG };
-#endif
-
-  CConfig& m_config;
+  CConfig m_config;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
-//   static INT CALLBACK BrowseCallbackProc(HWND hwnd,
-//     UINT uMsg,
-//     LPARAM lp,
-//     LPARAM pData);
 
 // 实现
 protected:

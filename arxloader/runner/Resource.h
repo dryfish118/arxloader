@@ -2,7 +2,7 @@
 // Microsoft Visual C++ 生成的包含文件。
 // 供 arxrunner.rc 使用
 //
-#define IDD_ARXLIST_DIALOG              102
+#define IDD_CONFIG_DIALOG               102
 #define IDD_ARXRUNNER_DIALOG            103
 #define IDR_MAINFRAME                   128
 #define IDC_TREE_TESTCASE               1000

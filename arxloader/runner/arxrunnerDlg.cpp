@@ -16,7 +16,7 @@
 
 
 CarxrunnerDlg::CarxrunnerDlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_ARXRUNNER_DIALOG, pParent)
+	: CDialogEx(CarxrunnerDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
