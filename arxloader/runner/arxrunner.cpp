@@ -5,11 +5,7 @@
 #include "pch.h"
 #include "arxrunner.h"
 #include "configDlg.h"
-#include "arxrunnerDlg.h"
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
+#include "runnerDlg.h"
 
 
 // CArxRunnerApp
@@ -117,7 +113,7 @@ BOOL CArxRunnerApp::InitInstance()
     CMutex m(TRUE, L"Arx runner - Runner");
     if (m.m_hObject)
     {
-      CarxrunnerDlg dlg;
+      CRunnerDlg dlg;
       m_pMainWnd = &dlg;
       dlg.DoModal();
     }

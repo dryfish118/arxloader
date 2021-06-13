@@ -15,7 +15,7 @@
     <ClCompile Include="config.cpp" />
     <ClCompile Include="configDlg.cpp" />
     <ClCompile Include="arxrunner.cpp" />
-    <ClCompile Include="arxrunnerDlg.cpp" />
+    <ClCompile Include="runnerDlg.cpp" />
     <ClCompile Include="basedlg.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Arx|x64'">Create</PrecompiledHeader>
@@ -32,7 +32,7 @@
     <ClInclude Include="config.h" />
     <ClInclude Include="configDlg.h" />
     <ClInclude Include="arxrunner.h" />
-    <ClInclude Include="arxrunnerDlg.h" />
+    <ClInclude Include="runnerDlg.h" />
     <ClInclude Include="basedlg.h" />
     <ClInclude Include="xmlutil.h" />
     <ClInclude Include="pch.h" />

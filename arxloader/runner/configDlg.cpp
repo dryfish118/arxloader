@@ -2,10 +2,6 @@
 #include "Resource.h"
 #include "configDlg.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
-
 CConfigDlg::CConfigDlg(CWnd* pParent /*=nullptr*/)
 	: CBaseDlg(CConfigDlg::IDD, pParent)
   , m_bSetCheck(false)

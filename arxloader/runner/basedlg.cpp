@@ -1,10 +1,6 @@
 ﻿#include "pch.h"
 #include "basedlg.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
-
 #define MOVEX               0x00001
 #define MOVEY               0x00002
 #define MOVEXY              0x00003

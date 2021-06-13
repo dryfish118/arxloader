@@ -11,14 +11,14 @@
     <ClCompile Include="config.cpp">
       <Filter>config</Filter>
     </ClCompile>
-    <ClCompile Include="arxrunnerDlg.cpp">
-      <Filter>runner</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="xmlimpl.cpp">
       <Filter>config</Filter>
     </ClCompile>
     <ClCompile Include="arxcases.cpp">
+      <Filter>runner</Filter>
+    </ClCompile>
+    <ClCompile Include="runnerDlg.cpp">
       <Filter>runner</Filter>
     </ClCompile>
   </ItemGroup>
@@ -33,9 +33,6 @@
     <ClInclude Include="config.h">
       <Filter>config</Filter>
     </ClInclude>
-    <ClInclude Include="arxrunnerDlg.h">
-      <Filter>runner</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="xmlutil.h">
@@ -48,6 +45,9 @@
       <Filter>inc</Filter>
     </ClInclude>
     <ClInclude Include="arxcases.h">
+      <Filter>runner</Filter>
+    </ClInclude>
+    <ClInclude Include="runnerDlg.h">
       <Filter>runner</Filter>
     </ClInclude>
   </ItemGroup>
