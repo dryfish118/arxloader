@@ -14,6 +14,16 @@ static CString documentsPath()
     {
       CoTaskMemFree(pidl);
 
+      size_t len = wcslen(szPath);
+      if (len)
+      {
+        if (szPath[len - 1] != L'\\')
+        {
+          szPath[len] = L'\\';
+          szPath[len + 1] = L'\0';
+        }
+      }
+
       return szPath;
     }
   }
@@ -33,10 +43,10 @@ CConfig::CConfig()
     CXmlUtilNode* root = reader->Root();
     if (root && root->Name() == L"Config")
     {
-      CXmlUtilNode* nodeLog = root->Child(L"LogFile");
+      CXmlUtilNode* nodeLog = root->Child(L"Log");
       if (nodeLog)
       {
-        m_logFile = nodeLog->Value().c_str();
+        m_logPath = nodeLog->Value().c_str();
       }
 
       CXmlUtilNode* nodeModuleCases = root->Child(L"ModuleCases");
@@ -113,9 +123,9 @@ CConfig::CConfig()
   }
   reader->Release();
 
-  if (m_logFile.IsEmpty())
+  if (m_logPath.IsEmpty())
   {
-    m_logFile = documentsPath() + L"\\resuts.log";
+    m_logPath = documentsPath();
   }
 }
 
@@ -125,8 +135,8 @@ CConfig::~CConfig()
 
   CXmlUtilNode* root = writer->CreateRoot(L"Config");
 
-  CXmlUtilNode* nodeLog = root->CreateChild(L"LogFile");
-  nodeLog->SetValue(m_logFile);
+  CXmlUtilNode* nodeLog = root->CreateChild(L"Log");
+  nodeLog->SetValue(m_logPath);
 
   if (m_bSave)
   {

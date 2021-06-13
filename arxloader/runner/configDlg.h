@@ -19,15 +19,17 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
+//   static INT CALLBACK BrowseCallbackProc(HWND hwnd,
+//     UINT uMsg,
+//     LPARAM lp,
+//     LPARAM pData);
 
 // 实现
 protected:
-  void initTree();
   void checkTreeItem(BOOL bCheck);
 
 	// 生成的消息映射函数
   virtual BOOL OnInitDialog();
-  afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
   afx_msg void OnBnClickedButtonFile();
   afx_msg void OnBnClickedButtonView();
   afx_msg void OnBnClickedButtonFilter();

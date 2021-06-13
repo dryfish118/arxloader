@@ -58,7 +58,7 @@ BOOL CConfigDlg::OnInitDialog()
   MoveControlXY(IDCANCEL, 100, 100);
   MoveControlXY(IDOK, 100, 100);
 
-  SetDlgItemText(IDC_STATIC_LOG, m_config.m_logFile);
+  SetDlgItemText(IDC_STATIC_LOG, m_config.m_logPath);
 
   CComboBox* box = (CComboBox*)GetDlgItem(IDC_COMBO_FILTER);
   for (int i = 0; i < m_config.m_filters.GetCount(); i++)
@@ -66,7 +66,8 @@ BOOL CConfigDlg::OnInitDialog()
     box->AddString(m_config.m_filters.GetAt(i));
   }
 
-  initTree();
+  m_treeArx.ModifyStyle(0, TVS_HASBUTTONS | TVS_HASLINES |
+    TVS_LINESATROOT | TVS_DISABLEDRAGDROP | TVS_CHECKBOXES);
   OnBnClickedButtonFilter();
 
   ((CButton*)GetDlgItem(IDC_CHECK_SAVE))->SetCheck(m_config.m_bSave);
@@ -76,12 +77,81 @@ BOOL CConfigDlg::OnInitDialog()
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
-void CConfigDlg::initTree()
+static INT CALLBACK BrowseCallbackProc(HWND hwnd,
+  UINT uMsg,
+  LPARAM lp,
+  LPARAM pData)
 {
-  m_treeArx.ModifyStyle(0, TVS_HASBUTTONS | TVS_HASLINES |
-    TVS_LINESATROOT | TVS_DISABLEDRAGDROP | TVS_CHECKBOXES);
+  CConfigDlg* pDlg = (CConfigDlg*)pData;
+  ASSERT(pDlg != NULL);
+  wchar_t logPath[MAX_PATH] = { 0 };
+  pDlg->GetDlgItemText(IDC_STATIC_LOG, logPath, MAX_PATH);
 
-  //m_bSetCheck = true;
+  switch (uMsg)
+  {
+  case BFFM_INITIALIZED:
+    ::SendMessage(hwnd, BFFM_SETSELECTION, TRUE, (LPARAM)logPath);
+    break;
+
+  case BFFM_SELCHANGED:
+    if (SHGetPathFromIDList((LPITEMIDLIST)lp, (LPWSTR)logPath))
+    {
+      ::SendMessage(hwnd, BFFM_SETSTATUSTEXT, 0, (LPARAM)logPath);
+    }
+    break;
+  }
+  return 0;
+}
+
+void CConfigDlg::OnBnClickedButtonFile()
+{
+  LPMALLOC pMalloc = NULL;
+  if (SUCCEEDED(SHGetMalloc(&pMalloc)))
+  {
+    BROWSEINFO bi;
+    ZeroMemory(&bi, sizeof(bi));
+    bi.hwndOwner = GetSafeHwnd();
+    bi.pszDisplayName = 0;
+    bi.pidlRoot = 0;
+    bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_STATUSTEXT |
+      BIF_NONEWFOLDERBUTTON | BIF_NEWDIALOGSTYLE |
+      BIF_EDITBOX | BIF_DONTGOBELOWDOMAIN;
+    wchar_t szTitle[] = L"指定日志目录";
+    bi.lpszTitle = szTitle;
+    bi.lpfn = BrowseCallbackProc;
+    bi.lParam = (LPARAM)this;
+    LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
+    if (pidl)
+    {
+      wchar_t logPath[MAX_PATH] = { 0 };
+      if (SHGetPathFromIDList(pidl, logPath))
+      {
+        size_t len = wcslen(logPath);
+        if (len)
+        {
+          if (logPath[len - 1] != L'\\')
+          {
+            logPath[len] = L'\\';
+            logPath[len + 1] = L'\0';
+          }
+        }
+        SetDlgItemText(IDC_STATIC_LOG, logPath);
+      }
+      pMalloc->Free(pidl);
+    }
+    pMalloc->Release();
+  }
+}
+
+void CConfigDlg::OnBnClickedButtonView()
+{
+  CString fileName;
+  GetDlgItemText(IDC_STATIC_LOG, fileName);
+  ShellExecute(NULL, NULL, fileName, NULL, NULL, SW_SHOW);
+}
+
+void CConfigDlg::OnBnClickedButtonFilter()
+{
   for (int i = 0; i < m_config.m_ac.moduleCount(); i++)
   {
     IArxModule* m = m_config.m_ac.moduleAt(i);
@@ -99,32 +169,6 @@ void CConfigDlg::initTree()
     }
     m_treeArx.Expand(hRoot, TVE_EXPAND);
   }
-  //m_bSetCheck = false;
-}
-
-void CConfigDlg::OnBnClickedButtonFile()
-{
-  wchar_t logFile[MAX_PATH] = { 0 };
-  ::GetDlgItemText(GetSafeHwnd(), IDC_STATIC_LOG, logFile, MAX_PATH);
-  CFileDialog dlg(FALSE, L"log", logFile,
-    OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-    L"日志文件|*.log||");
-  if (IDOK == dlg.DoModal())
-  {
-    SetDlgItemText(IDC_STATIC_LOG, dlg.GetPathName());
-  }
-}
-
-void CConfigDlg::OnBnClickedButtonView()
-{
-  CString fileName;
-  GetDlgItemText(IDC_STATIC_LOG, fileName);
-  ShellExecute(NULL, NULL, fileName, NULL, NULL, SW_SHOW);
-}
-
-void CConfigDlg::OnBnClickedButtonFilter()
-{
-
 }
 
 void CConfigDlg::OnBnClickedButtonAdd()
@@ -236,7 +280,7 @@ void CConfigDlg::checkTreeItem(BOOL bCheck)
 
 void CConfigDlg::OnBnClickedOk()
 {
-  GetDlgItemText(IDC_STATIC_LOG, m_config.m_logFile);
+  GetDlgItemText(IDC_STATIC_LOG, m_config.m_logPath);
 
   m_config.m_filters.RemoveAll();
   CComboBox* box = (CComboBox*)GetDlgItem(IDC_COMBO_FILTER);

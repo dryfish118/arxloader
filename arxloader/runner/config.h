@@ -9,7 +9,7 @@ public:
   ~CConfig();
 
 public:
-  CString m_logFile;
+  CString m_logPath;
   CArxCases m_ac;
   CStringArray m_filters;
   int m_bSave;
