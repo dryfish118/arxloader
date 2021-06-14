@@ -65,9 +65,9 @@ BOOL CConfigDlg::OnInitDialog()
     TVS_LINESATROOT | TVS_DISABLEDRAGDROP | TVS_CHECKBOXES);
   OnBnClickedButtonFilter();
 
-  ((CButton*)GetDlgItem(IDC_CHECK_SAVE))->SetCheck(m_config.m_bSave);
-  ((CButton*)GetDlgItem(IDC_RADIO_GCAD))->SetCheck(m_config.m_bGcad);
-  ((CButton*)GetDlgItem(IDC_RADIO_ACAD))->SetCheck(!m_config.m_bGcad);
+  ((CButton*)GetDlgItem(IDC_CHECK_SAVE))->SetCheck(m_config.m_iSave);
+  ((CButton*)GetDlgItem(IDC_RADIO_GCAD))->SetCheck(m_config.m_iGcad);
+  ((CButton*)GetDlgItem(IDC_RADIO_ACAD))->SetCheck(!m_config.m_iGcad);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -320,8 +320,10 @@ void CConfigDlg::OnBnClickedOk()
     hRoot = m_treeArx.GetNextSiblingItem(hRoot);
   }
 
-  m_config.m_bSave = ((CButton*)GetDlgItem(IDC_CHECK_SAVE))->GetCheck();
-  m_config.m_bGcad = ((CButton*)GetDlgItem(IDC_RADIO_GCAD))->GetCheck();
+  m_config.m_iSave = ((CButton*)GetDlgItem(IDC_CHECK_SAVE))->GetCheck();
+  m_config.m_iGcad = ((CButton*)GetDlgItem(IDC_RADIO_GCAD))->GetCheck();
+
+  m_config.m_bSave = true;
 
   CBaseDlg::OnOK();
 }

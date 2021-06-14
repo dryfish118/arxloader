@@ -9,9 +9,10 @@ public:
   ~CConfig();
 
 public:
+  bool m_bSave;
   CString m_logPath;
   CArxCases m_ac;
   CStringArray m_filters;
-  int m_bSave;
-  int m_bGcad;
+  int m_iSave;
+  int m_iGcad;
 };

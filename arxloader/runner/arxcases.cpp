@@ -1,22 +1,6 @@
 #include "pch.h"
 #include "arxcases.h"
 
-CString getAutoCadInstallDir()
-{
-  CRegKey rk;
-  if (ERROR_SUCCESS == rk.Open(HKEY_LOCAL_MACHINE,
-    L"SOFTWARE\\Autodesk\\AutoCAD\\R23.1\\ACAD-3001:804", KEY_READ))
-  {
-    wchar_t	szDir[2048] = { 0 };
-    ULONG len = 2048;
-    if (ERROR_SUCCESS == rk.QueryStringValue(L"AcadLocation", szDir, &len))
-    {
-      return szDir;
-    }
-  }
-  return L"";
-}
-
 CArxCases::CArxCases()
 {
   SetCurrentDirectory(getAutoCadInstallDir());

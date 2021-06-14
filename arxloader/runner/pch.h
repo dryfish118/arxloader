@@ -48,10 +48,13 @@
 #include <list>
 #include <string>
 #include <algorithm>
+#include <thread>
 
 #include "../inc/arxcase.h"
 
 CString appDir();
+CString getAutoCadInstallDir();
+CString documentsPath();
 
 #ifdef _UNICODE
 #if defined _M_IX86

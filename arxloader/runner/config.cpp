@@ -4,36 +4,10 @@
 
 typedef std::set<std::wstring> StringArray;
 
-static CString documentsPath()
-{
-  LPITEMIDLIST pidl = nullptr;
-  if (SUCCEEDED(SHGetSpecialFolderLocation(NULL, CSIDL_MYDOCUMENTS, &pidl)))
-  {
-    wchar_t szPath[MAX_PATH] = { 0 };
-    if (SHGetPathFromIDList(pidl, szPath))
-    {
-      CoTaskMemFree(pidl);
-
-      size_t len = wcslen(szPath);
-      if (len)
-      {
-        if (szPath[len - 1] != L'\\')
-        {
-          szPath[len] = L'\\';
-          szPath[len + 1] = L'\0';
-        }
-      }
-
-      return szPath;
-    }
-  }
-
-  return L"";
-}
-
 CConfig::CConfig()
-  : m_bSave(0)
-  , m_bGcad(1)
+  : m_bSave(false)
+  , m_iSave(0)
+  , m_iGcad(1)
 {
   CoInitialize(nullptr);
 
@@ -111,17 +85,19 @@ CConfig::CConfig()
       CXmlUtilNode* nodeSave = root->Child(L"Save");
       if (nodeSave)
       {
-        m_bSave = nodeSave->Value() == L"0" ? 0 : 1;
+        m_iSave = nodeSave->Value() == L"0" ? 0 : 1;
       }
 
       CXmlUtilNode* nodeGcad = root->Child(L"Gcad");
       if (nodeGcad)
       {
-        m_bGcad = nodeGcad->Value() == L"0" ? 0 : 1;
+        m_iGcad = nodeGcad->Value() == L"0" ? 0 : 1;
       }
     }
   }
   reader->Release();
+
+  CoUninitialize();
 
   if (m_logPath.IsEmpty())
   {
@@ -131,59 +107,63 @@ CConfig::CConfig()
 
 CConfig::~CConfig()
 {
-  CXmlUtilDocWriter* writer = xmlutilCreateXMLDocWriter();
-
-  CXmlUtilNode* root = writer->CreateRoot(L"Config");
-
-  CXmlUtilNode* nodeLog = root->CreateChild(L"Log");
-  nodeLog->SetValue(m_logPath);
-
   if (m_bSave)
   {
-    CXmlUtilNode* nodeModuleCases = root->CreateChild(L"ModuleCases");
-    for (int i = 0; i < m_ac.moduleCount(); i++)
-    {
-      IArxModule* m = m_ac.moduleAt(i);
-      StringArray sa;
-      for (int j = 0; j < m->caseCount(); j++)
-      {
-        if (m->caseAt(j)->isEnabled())
-        {
-          sa.emplace(m->caseAt(j)->name());
-        }
-      }
+    CoInitialize(nullptr);
 
-      if (!sa.empty())
+    CXmlUtilDocWriter* writer = xmlutilCreateXMLDocWriter();
+
+    CXmlUtilNode* root = writer->CreateRoot(L"Config");
+
+    CXmlUtilNode* nodeLog = root->CreateChild(L"Log");
+    nodeLog->SetValue(m_logPath);
+
+    if (m_iSave)
+    {
+      CXmlUtilNode* nodeModuleCases = root->CreateChild(L"ModuleCases");
+      for (int i = 0; i < m_ac.moduleCount(); i++)
       {
-        CXmlUtilNode* nodeModule = nodeModuleCases->CreateChild(L"Module");
-        nodeModule->AddAttribute(L"Name", m->moduleName());
-        for (auto& it : sa)
+        IArxModule* m = m_ac.moduleAt(i);
+        StringArray sa;
+        for (int j = 0; j < m->caseCount(); j++)
         {
-          CXmlUtilNode* nodeCase = nodeModule->CreateChild(L"Case");
-          nodeCase->SetValue(it.c_str());
+          if (m->caseAt(j)->isEnabled())
+          {
+            sa.emplace(m->caseAt(j)->name());
+          }
+        }
+
+        if (!sa.empty())
+        {
+          CXmlUtilNode* nodeModule = nodeModuleCases->CreateChild(L"Module");
+          nodeModule->AddAttribute(L"Name", m->moduleName());
+          for (auto& it : sa)
+          {
+            CXmlUtilNode* nodeCase = nodeModule->CreateChild(L"Case");
+            nodeCase->SetValue(it.c_str());
+          }
         }
       }
     }
-  }
 
-  if (!m_filters.IsEmpty())
-  {
-    CXmlUtilNode* nodeFilters = root->CreateChild(L"Filters");
-    for (int i = 0; i < m_filters.GetCount(); i++)
+    if (!m_filters.IsEmpty())
     {
-      CXmlUtilNode* nodeFilter = nodeFilters->CreateChild(L"Filter");
-      nodeFilter->SetValue(m_filters.GetAt(i));
+      CXmlUtilNode* nodeFilters = root->CreateChild(L"Filters");
+      for (int i = 0; i < m_filters.GetCount(); i++)
+      {
+        CXmlUtilNode* nodeFilter = nodeFilters->CreateChild(L"Filter");
+        nodeFilter->SetValue(m_filters.GetAt(i));
+      }
     }
+
+    CXmlUtilNode* nodeSave = root->CreateChild(L"Save");
+    nodeSave->SetValue(m_iSave ? L"1" : L"0");
+
+    CXmlUtilNode* nodeGcad = root->CreateChild(L"Gcad");
+    nodeGcad->SetValue(m_iGcad ? L"1" : L"0");
+
+    writer->Save(appDir() + L"config.xml");
+    writer->Release();
+    CoUninitialize();
   }
-
-  CXmlUtilNode* nodeSave = root->CreateChild(L"Save");
-  nodeSave->SetValue(m_bSave ? L"1" : L"0");
-
-  CXmlUtilNode* nodeGcad = root->CreateChild(L"Gcad");
-  nodeGcad->SetValue(m_bGcad ? L"1" : L"0");
-
-  writer->Save(appDir() + L"config.xml");
-  writer->Release();
-
-  CoUninitialize();
 }

@@ -16,11 +16,16 @@ public:
 // 实现
 protected:
   virtual BOOL OnInitDialog();
+  virtual void OnCancel();
   afx_msg void OnBnClickedButtonView();
   afx_msg void OnBnClickedButtonConfig();
   afx_msg void OnBnClickedOk();
+  afx_msg LRESULT OnThreadMessage(WPARAM wp, LPARAM lp);
 	DECLARE_MESSAGE_MAP()
+
+  static void startRun(CRunnerDlg* pDlg);
 
 private:
   CListCtrl m_listLog;
+  CString m_sLog;
 };
