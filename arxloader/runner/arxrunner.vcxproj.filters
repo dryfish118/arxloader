@@ -21,6 +21,9 @@
     <ClCompile Include="runnerDlg.cpp">
       <Filter>runner</Filter>
     </ClCompile>
+    <ClCompile Include="arxcase.cpp">
+      <Filter>case</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arxrunner.h" />
@@ -60,6 +63,9 @@
     </Filter>
     <Filter Include="inc">
       <UniqueIdentifier>{39c46c4d-0af0-4efc-b575-ef67858925f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="case">
+      <UniqueIdentifier>{e7d98bef-e9c9-42c4-ac50-0e5841fe9695}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

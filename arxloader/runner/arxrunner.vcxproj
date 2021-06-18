@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="arxcase.cpp" />
     <ClCompile Include="arxcases.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="configDlg.cpp" />

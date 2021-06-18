@@ -64,7 +64,7 @@ public:
   CString sCase;
 };
 
-
+void executeCase(const CString& arg);
 BOOL CArxRunnerApp::InitInstance()
 {
 	INITCOMMONCONTROLSEX InitCtrls;
@@ -100,7 +100,7 @@ BOOL CArxRunnerApp::InitInstance()
   }
   else if (!cmdInfo.sCase.IsEmpty())
   {
-    //
+    executeCase(cmdInfo.sCase);
   }
 
 	return FALSE;

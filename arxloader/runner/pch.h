@@ -49,6 +49,7 @@
 #include <string>
 #include <algorithm>
 #include <thread>
+#include <condition_variable>
 
 #include "../inc/arxcase.h"
 

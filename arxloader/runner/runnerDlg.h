@@ -23,9 +23,12 @@ protected:
   afx_msg LRESULT OnThreadMessage(WPARAM wp, LPARAM lp);
 	DECLARE_MESSAGE_MAP()
 
-  static void startRun(CRunnerDlg* pDlg);
+  static int threadProc(LPVOID param);
+  void run();
 
 private:
   CListCtrl m_listLog;
   CString m_sLog;
+  HANDLE m_hThread;
+  HANDLE m_hEvent;
 };
