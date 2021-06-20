@@ -4,26 +4,6 @@
 
 // 当使用预编译的头时，需要使用此源文件，编译才能成功。
 
-CString appDir()
-{
-  wchar_t szFilePath[MAX_PATH] = { 0 };
-  GetModuleFileName(nullptr, szFilePath, MAX_PATH);
-  if (wcslen(szFilePath) == 0)
-  {
-    return L"";
-  }
-
-#if _MSVC_LANG >= 201703L
-  std::filesystem::path currentFilePath(szFilePath);
-  return currentFilePath.parent_path().c_str() + CString(L"\\");
-#else
-  wchar_t* szTail = wcsrchr(szFilePath, L'\\');
-  wchar_t szDir[MAX_PATH] = { 0 };
-  wcsncpy_s(szDir, MAX_PATH, szFilePath, szTail - szFilePath + 1);
-  return szDir;
-#endif
-}
-
 CString getAutoCadInstallDir()
 {
   CRegKey rk;
@@ -75,4 +55,18 @@ CString documentsPath()
   }
 
   return L"";
+}
+
+HANDLE startProc(wchar_t* szCommandLine)
+{
+  STARTUPINFO si = { 0 };
+  si.cb = sizeof(si);
+  PROCESS_INFORMATION pi = { 0 };
+  if (CreateProcess(nullptr, szCommandLine,
+    nullptr, nullptr, FALSE, 0, nullptr, nullptr,
+    &si, &pi))
+  {
+    return pi.hProcess;
+  }
+  return nullptr;
 }

@@ -16,6 +16,7 @@
     <ClCompile Include="config.cpp" />
     <ClCompile Include="configDlg.cpp" />
     <ClCompile Include="arxrunner.cpp" />
+    <ClCompile Include="sharefile.cpp" />
     <ClCompile Include="runnerDlg.cpp" />
     <ClCompile Include="basedlg.cpp" />
     <ClCompile Include="pch.cpp">
@@ -35,6 +36,7 @@
     <ClInclude Include="arxrunner.h" />
     <ClInclude Include="runnerDlg.h" />
     <ClInclude Include="basedlg.h" />
+    <ClInclude Include="sharefile.h" />
     <ClInclude Include="xmlutil.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
@@ -114,6 +116,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <SmallerTypeCheck>false</SmallerTypeCheck>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>

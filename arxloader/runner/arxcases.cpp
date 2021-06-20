@@ -52,7 +52,6 @@ void CArxCases::listModule(const wchar_t* path)
       IArxModule* am = fun();
       if (am)
       {
-        am->putHandle(hArx);
         m_modules.emplace_back(am);
         hArx = nullptr;
       }

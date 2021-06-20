@@ -42,9 +42,8 @@
 #include <afxcontrolbars.h>     // MFC 支持功能区和控制条
 #include <afxdialogex.h>
 
+#include "../inc/gcommon.h"
 
-
-#include<filesystem>
 #include <unordered_map>
 #include <map>
 #include <set>
@@ -57,6 +56,7 @@
 #include <adui.h>
 #include <acui.h>
 #include <acuiDialog.h>
+#include <acedCmdNF.h>
 
 
 #ifdef _UNICODE

@@ -503,10 +503,9 @@ private:
 
 class CArxModule : public IArxModule
 {
-  void* m_h;
   std::vector<IArxCase*> m_cases;
 public:
-  CArxModule() : m_h(nullptr)
+  CArxModule()
   {
     m_cases.emplace_back(new CCreateFieldMtext);
     m_cases.emplace_back(new CCreateLine);
@@ -521,14 +520,14 @@ public:
     }
   }
 
-  virtual void putHandle(void* h)
-  {
-    m_h = h;
-  }
-
   virtual void* getHandle() const
   {
-    return m_h;
+    return (void*)GetModuleHandle(arxName());
+  }
+
+  virtual const wchar_t* arxName() const
+  {
+    return L"field.dll";
   }
 
   virtual const wchar_t* moduleName() const

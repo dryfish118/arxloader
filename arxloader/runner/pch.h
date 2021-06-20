@@ -13,6 +13,8 @@
 #define VC_EXTRALEAN            // 从 Windows 头中排除极少使用的资料
 #endif
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <SDKDDKVer.h>
 
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // 某些 CString 构造函数将是显式的
@@ -38,9 +40,6 @@
 #include <afxcontrolbars.h>     // MFC 支持功能区和控制条
 #include <afxdialogex.h>
 
-
-
-#include<filesystem>
 #include <unordered_map>
 #include <map>
 #include <set>
@@ -48,14 +47,18 @@
 #include <list>
 #include <string>
 #include <algorithm>
+#include <ctime>
+#include <chrono>
+#include <sstream>
 #include <thread>
 #include <condition_variable>
 
+#include "../inc/gcommon.h"
 #include "../inc/arxcase.h"
 
-CString appDir();
-CString getAutoCadInstallDir();
 CString documentsPath();
+CString getAutoCadInstallDir();
+HANDLE startProc(wchar_t* szCommandLine);
 
 #ifdef _UNICODE
 #if defined _M_IX86

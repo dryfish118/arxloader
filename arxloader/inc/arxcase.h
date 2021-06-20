@@ -13,8 +13,8 @@ public:
 class IArxModule
 {
 public:
-  virtual void putHandle(void* h) = 0;
   virtual void* getHandle() const = 0;
+  virtual const wchar_t* arxName() const = 0;
   virtual const wchar_t* moduleName() const = 0;
   virtual int caseCount() const = 0;
   virtual IArxCase* caseAt(int i) const = 0;

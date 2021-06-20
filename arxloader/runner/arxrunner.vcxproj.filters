@@ -24,6 +24,9 @@
     <ClCompile Include="arxcase.cpp">
       <Filter>case</Filter>
     </ClCompile>
+    <ClCompile Include="sharefile.cpp">
+      <Filter>runner</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arxrunner.h" />
@@ -51,6 +54,9 @@
       <Filter>runner</Filter>
     </ClInclude>
     <ClInclude Include="runnerDlg.h">
+      <Filter>runner</Filter>
+    </ClInclude>
+    <ClInclude Include="sharefile.h">
       <Filter>runner</Filter>
     </ClInclude>
   </ItemGroup>

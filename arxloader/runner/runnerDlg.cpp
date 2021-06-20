@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "Resource.h"
 #include "config.h"
+#include "sharefile.h"
 #include "runnerDlg.h"
 
 #define WM_THREAD_MESSAGE (WM_USER + 1001)
@@ -29,6 +30,8 @@ END_MESSAGE_MAP()
 BOOL CRunnerDlg::OnInitDialog()
 {
 	CBaseDlg::OnInitDialog();
+
+  SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
   StretchControlXY(IDC_LIST_LOG, 100, 100);
   MoveControlY(IDC_BUTTON_VIEW, 100);
@@ -62,20 +65,6 @@ void CRunnerDlg::OnBnClickedButtonView()
   }
 }
 
-static HANDLE startProc(wchar_t* szCommandLine)
-{
-  STARTUPINFO si = { 0 };
-  si.cb = sizeof(si);
-  PROCESS_INFORMATION pi = { 0 };
-  if (CreateProcess(nullptr, szCommandLine,
-    nullptr, nullptr, FALSE, 0, nullptr, nullptr,
-    &si, &pi))
-  {
-    return pi.hProcess;
-  }
-  return nullptr;
-}
-
 void CRunnerDlg::OnBnClickedButtonConfig()
 {
   CString strDir(appDir());
@@ -98,7 +87,7 @@ void CRunnerDlg::OnBnClickedOk()
     CloseHandle(m_hThread);
     m_hThread = nullptr;
 
-    DeleteObject(m_hEvent);
+    CloseHandle(m_hEvent);
     m_hEvent = nullptr;
 
     GetDlgItem(IDCANCEL)->EnableWindow(TRUE);
@@ -106,7 +95,6 @@ void CRunnerDlg::OnBnClickedOk()
   }
   else
   {
-    m_sLog.Empty();
     GetDlgItem(IDCANCEL)->EnableWindow(FALSE);
     SetDlgItemText(IDOK, L"停止");
 
@@ -129,11 +117,21 @@ int CRunnerDlg::threadProc(LPVOID param)
 #define WM_THREAD_FINISH  0
 #define WM_THREAD_CANCEL  1
 #define WM_THREAD_CASE    2
-#define WM_THREAD_RESULT  3
+#define WM_THREAD_SUCCESS 4
+#define WM_THREAD_FAIL    5
+#define WM_THREAD_CRASH   6
+#define WM_THREAD_ERROR   7
 
 void CRunnerDlg::run()
 {
+  std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+  std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
+  std::wstringstream ss;
+  ss << std::put_time(std::localtime(&nowTime), L"%Y%m%d-%H%M%S");
+  m_sLog.Format(L"%sresult-%s.log", (LPCTSTR)appDir(), ss.str().c_str());
+
   CConfig cfg;
+  CStringArray cases;
   for (int i = 0; i < cfg.m_ac.moduleCount(); i++)
   {
     IArxModule* m = cfg.m_ac.moduleAt(i);
@@ -143,58 +141,71 @@ void CRunnerDlg::run()
       if (c->isEnabled())
       {
         CString str;
-        str.Format(L"%s[%s]", c->name(), m->moduleName());
+        str.Format(L"%s - [%s]", c->name(), m->moduleName());
         SendMessage(WM_THREAD_MESSAGE, WM_THREAD_CASE, (LPARAM)(LPCTSTR)str);
+        
+        str.Format(L"%s:%s", m->arxName(), c->name());
+        cases.Add(str);
       }
     }
   }
 
-  int count = 0;
-  const wchar_t szEvent[] = L"Gstarcad Cases";
-  HANDLE hEvent = CreateEvent(nullptr, TRUE, TRUE, szEvent);
-  for (int i = 0; i < cfg.m_ac.moduleCount(); i++)
+  for (int i = 0; i < cases.GetCount(); i++)
   {
-    IArxModule* m = cfg.m_ac.moduleAt(i);
-    for (int j = 0; j < m->caseCount(); j++)
+    const wchar_t strEvent[] = L"Global-Gstarcad Cases";
+    HANDLE hEvent = CreateEvent(nullptr, TRUE, FALSE, strEvent);
+
+    CShareFile sf(strCaseName);
+    sf.writeLine(cases.GetAt(i));
+
+    wchar_t strCmdLine[MAX_PATH * 2] = { 0 };
+    if (cfg.m_iGcad)
     {
-      IArxCase* c = m->caseAt(j);
-      if (c->isEnabled())
+    }
+    else
+    {
+      swprintf_s(strCmdLine, MAX_PATH * 2,
+        L"\"%sacad.exe\" /ld \"%sarxloader.arx\"",
+        (LPCTSTR)getAutoCadInstallDir(),
+        (LPCTSTR)appDir());
+    }
+    HANDLE hInst = startProc(strCmdLine);
+    if (hInst)
+    {
+      HANDLE handles[] = { m_hEvent, hEvent, hInst };
+      DWORD objId = WaitForMultipleObjects(3, handles, FALSE, INFINITE);
+      if (WAIT_OBJECT_0 == objId)
       {
-        wchar_t strCmdLine[MAX_PATH] = { 0 };
-        swprintf_s(strCmdLine, MAX_PATH,
-          L"%sarxrunner.exe /case \"%s:%s:%s\"",
-          (LPCTSTR)appDir(), szEvent, m->moduleName(), c->name());
-        HANDLE hInst = startProc(strCmdLine);
-        if (hInst)
+        SetEvent(hEvent);
+        CloseHandle(hEvent);
+        PostMessage(WM_THREAD_MESSAGE, WM_THREAD_CANCEL);
+        return;
+      }
+      else if (WAIT_OBJECT_0 + 1 == objId)
+      {
+        sf.reset();
+        if (sf.readLine() == "1")
         {
-          HANDLE handles[] = { m_hEvent, hInst };
-          DWORD objId = WaitForMultipleObjects(2, handles, FALSE, INFINITE);
-          if (WAIT_OBJECT_0 == objId)
-          {
-            ResetEvent(hEvent);
-            CloseHandle(hEvent);
-            WaitForSingleObject(hInst, INFINITE);
-            SendMessage(WM_THREAD_MESSAGE, WM_THREAD_CANCEL);
-            return;
-          }
-          else if (WAIT_OBJECT_0 + 1 == objId)
-          {
-            DWORD ret = 0;
-            GetExitCodeProcess(hInst, &ret);
-            SendMessage(WM_THREAD_MESSAGE, WM_THREAD_RESULT, (count << 4) | ret);
-          }
+          PostMessage(WM_THREAD_MESSAGE, WM_THREAD_SUCCESS, i);
         }
         else
         {
-          SendMessage(WM_THREAD_MESSAGE, WM_THREAD_RESULT, (count << 4) | 2);
+          PostMessage(WM_THREAD_MESSAGE, WM_THREAD_FAIL, i);
         }
-        count++;
+      }
+      else if (WAIT_OBJECT_0 + 2 == objId)
+      {
+        PostMessage(WM_THREAD_MESSAGE, WM_THREAD_CRASH, i);
       }
     }
+    else
+    {
+      PostMessage(WM_THREAD_MESSAGE, WM_THREAD_ERROR, i);
+    }
+    CloseHandle(hEvent);
   }
-  CloseHandle(hEvent);
 
-  SendMessage(WM_THREAD_MESSAGE, WM_THREAD_FINISH);
+  PostMessage(WM_THREAD_MESSAGE, WM_THREAD_FINISH);
 }
 
 LRESULT CRunnerDlg::OnThreadMessage(WPARAM wp, LPARAM lp)
@@ -207,19 +218,45 @@ LRESULT CRunnerDlg::OnThreadMessage(WPARAM wp, LPARAM lp)
     break;
   }
   case WM_THREAD_FINISH:
+  {
+    m_listLog.InsertItem(m_listLog.GetItemCount(), L"完成");
+    OnBnClickedOk();
+    break;
+  }
   case WM_THREAD_CANCEL:
   {
+    SetEvent(m_hEvent);
+    WaitForSingleObject(m_hThread, INFINITE);
+    CloseHandle(m_hThread);
+    m_hThread = nullptr;
+
+    CloseHandle(m_hEvent);
+    m_hEvent = nullptr;
+
     GetDlgItem(IDCANCEL)->EnableWindow(TRUE);
     SetDlgItemText(IDOK, L"开始");
 
-    m_listLog.InsertItem(m_listLog.GetItemCount(),
-      (wp == WM_THREAD_FINISH) ? L"完成" : L"取消");
-
+    m_listLog.InsertItem(m_listLog.GetItemCount(), L"取消");
     break;
   }
-  case WM_THREAD_RESULT:
+  case WM_THREAD_SUCCESS:
   {
-    m_listLog.SetItemText((int)(lp >> 4), 1, ((lp & 0xF) == 1) ? L"成功" : L"失败");
+    m_listLog.SetItemText((int)lp, 1, L"成功");
+    break;
+  }
+  case WM_THREAD_FAIL:
+  {
+    m_listLog.SetItemText((int)lp, 1, L"失败");
+    break;
+  }
+  case WM_THREAD_CRASH:
+  {
+    m_listLog.SetItemText((int)lp, 1, L"崩溃");
+    break;
+  }
+  case WM_THREAD_ERROR:
+  {
+    m_listLog.SetItemText((int)lp, 1, L"错误");
     break;
   }
   default:
