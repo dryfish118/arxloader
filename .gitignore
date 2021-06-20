@@ -3,3 +3,4 @@ arxloader/int/
 arxloader/out/
 *.user
 *.aps
+*.err

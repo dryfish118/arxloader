@@ -20,9 +20,6 @@
     <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="arxlist.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\runner\sharefile.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />

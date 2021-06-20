@@ -165,7 +165,8 @@ void CRunnerDlg::run()
     else
     {
       swprintf_s(strCmdLine, MAX_PATH * 2,
-        L"\"%sacad.exe\" /ld \"%sarxloader.arx\"",
+        //L"\"%sacad.exe\" /ld \"%sarxloader.arx\"",
+        L"\"%sacad.exe\" /b \"%srunner.scr\"",
         (LPCTSTR)getAutoCadInstallDir(),
         (LPCTSTR)appDir());
     }
@@ -178,11 +179,22 @@ void CRunnerDlg::run()
       {
         SetEvent(hEvent);
         CloseHandle(hEvent);
+
+        if (WAIT_OBJECT_0 != WaitForSingleObject(hInst, 1000))
+        {
+          TerminateProcess(hInst, 0);
+        }
+
         PostMessage(WM_THREAD_MESSAGE, WM_THREAD_CANCEL);
         return;
       }
       else if (WAIT_OBJECT_0 + 1 == objId)
       {
+        if (WAIT_OBJECT_0 != WaitForSingleObject(hInst, 1000))
+        {
+          TerminateProcess(hInst, 0);
+        }
+
         sf.reset();
         if (sf.readLine() == "1")
         {
