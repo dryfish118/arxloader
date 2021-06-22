@@ -1,11 +1,10 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.1433
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arxrunner", "runner\arxrunner.vcxproj", "{CFE980F3-74E8-45FE-AD00-4F399FCA926D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "runner", "runner\runner.vcxproj", "{CFE980F3-74E8-45FE-AD00-4F399FCA926D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arxloader", "loader\arxloader.vcxproj", "{717021FB-EE57-43F7-B5C7-1C75B5DD663B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arxloader", "loader\loader.vcxproj", "{717021FB-EE57-43F7-B5C7-1C75B5DD663B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "field", "field\field.vcxproj", "{7DEE1E4F-22CC-42E1-BC72-82E3F5FCDC31}"
 EndProject
