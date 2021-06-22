@@ -70,7 +70,7 @@ void CRunnerDlg::OnBnClickedButtonConfig()
   CString strDir(appDir());
   wchar_t szCommandLine[MAX_PATH] = { 0 };
   wcscpy_s(szCommandLine, strDir);
-  wcscat_s(szCommandLine, MAX_PATH, L"arxrunner.exe /config");
+  wcscat_s(szCommandLine, MAX_PATH, L"runner.exe /config");
   HANDLE hInst = startProc(szCommandLine);
   if (hInst)
   {
@@ -165,7 +165,6 @@ void CRunnerDlg::run()
     else
     {
       swprintf_s(strCmdLine, MAX_PATH * 2,
-        //L"\"%sacad.exe\" /ld \"%sarxloader.arx\"",
         L"\"%sacad.exe\" /b \"%srunner.scr\"",
         (LPCTSTR)getAutoCadInstallDir(),
         (LPCTSTR)appDir());

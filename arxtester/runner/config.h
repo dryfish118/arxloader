@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "arxcases.h"
+#include "cases.h"
 
 class CConfig
 {
